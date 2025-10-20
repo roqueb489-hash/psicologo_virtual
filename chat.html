@@ -1,116 +1,3 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-require 'conexion.php';
-
-// Verificar si el usuario está autenticado
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$user_id = $_SESSION['user_id'];
-
-// Configuración de OpenAI
-$api_key = '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'; // Tu API key de OpenAI
-
-// Procesar mensaje enviado vía AJAX
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'send_message') {
-    $mensaje = trim($_POST['mensaje']);
-    if (empty($mensaje)) {
-        echo json_encode(['error' => 'Por favor, escribe un mensaje.']);
-        exit;
-    }
-    try {
-        // Llamada a OpenAI API
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-            'model' => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'system', 'content' => 'Eres un psicólogo virtual empático y profesional. Responde en español de manera útil y supportive. Mantén las respuestas breves pero significativas.'],
-                ['role' => 'user', 'content' => $mensaje]
-            ],
-            'max_tokens' => 150,
-            'temperature' => 0.7
-        ]));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $api_key
-        ]);
-
-        $response = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($http_code !== 200 || !$response) {
-            echo json_encode(['error' => 'No se pudo conectar con la IA']);
-            exit;
-        }
-
-        $data = json_decode($response, true);
-        $respuesta_texto = $data['choices'][0]['message']['content'] ?? 'No se pudo obtener respuesta de la IA';
-
-        // Lógica mejorada para determinar nivel_alerta
-        $nivel_alerta = 'verde'; // Valor por defecto (normal)
-        $mensaje_lower = strtolower($mensaje);
-        
-        // Palabras o frases para nivel "rojo" (dañino o peligroso)
-        $palabras_rojo = ['suicidio', 'quiero morir', 'autolesión', 'cortarme', 'matarme', 'crisis severa', 'ayuda urgente', 'desesperado'];
-        
-        // Palabras o frases para nivel "anaranjado" (raro o preocupante)
-        $palabras_anaranjado = ['ansiedad', 'ansioso', 'triste', 'deprimido', 'estresado', 'nervioso', 'preocupado', 'confundido', 'solo', 'abrumado', 'problemas serios'];
-        
-        // Palabras o frases para nivel "verde" (neutro o positivo, opcional para confirmación)
-        $palabras_verde = ['hola', 'cómo estás', 'bien', 'feliz', 'motivado', 'gracias', 'consejo', 'ayuda simple', 'duda'];
-
-        // Verificar nivel "rojo" primero
-        foreach ($palabras_rojo as $palabra) {
-            if (stripos($mensaje_lower, $palabra) !== false) {
-                $nivel_alerta = 'rojo';
-                break;
-            }
-        }
-
-        // Si no es "rojo", verificar nivel "anaranjado"
-        if ($nivel_alerta === 'verde') {
-            foreach ($palabras_anaranjado as $palabra) {
-                if (stripos($mensaje_lower, $palabra) !== false) {
-                    $nivel_alerta = 'anaranjado';
-                    break;
-                }
-            }
-        }
-
-        // Guardar mensaje en la base de datos con fecha automática
-        $sql = "INSERT INTO mensajes (user_id, mensaje, respuesta_ia, nivel_alerta, fecha) VALUES (:user_id, :mensaje, :respuesta_ia, :nivel_alerta, NOW())";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'user_id' => $user_id,
-            'mensaje' => $mensaje,
-            'respuesta_ia' => $respuesta_texto,
-            'nivel_alerta' => $nivel_alerta
-        ]);
-
-        // Obtener el ID del último mensaje insertado
-        $last_id = $pdo->lastInsertId();
-        echo json_encode(['success' => true, 'mensaje' => $mensaje, 'respuesta' => $respuesta_texto, 'nivel_alerta' => $nivel_alerta, 'id' => $last_id, 'fecha' => date('d/m/Y H:i')]);
-        exit;
-    } catch (Exception $e) {
-        echo json_encode(['error' => 'Error al procesar el mensaje: ' . $e->getMessage()]);
-        exit;
-    }
-}
-
-// Obtener historial de mensajes para la carga inicial
-$sql = "SELECT mensaje, respuesta_ia, nivel_alerta, fecha FROM mensajes WHERE user_id = :user_id ORDER BY fecha ASC";
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['user_id' => $user_id]);
-$mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -397,7 +284,6 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .loading-bar {
             width: 100%;
             height: 4px;
-            height: 4px;
             background: var(--gray-200);
             position: fixed;
             top: 0;
@@ -472,9 +358,16 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </style>
 </head>
 <body>
+    <script>
+        // Verificar si el usuario está autenticado
+        if (!localStorage.getItem('user_id')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
     <div class="loading-bar" id="loadingBar"></div>
     <div class="container">
-        <a href="index.php" class="back-button" title="Volver al inicio">
+        <a href="index.html" class="back-button" title="Volver al inicio">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div class="logo">
@@ -486,20 +379,7 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="success" id="successMessage"></div>
 
         <div class="chat-container">
-            <div class="chat-history" id="chatHistory">
-                <?php foreach ($mensajes as $msg): ?>
-                    <div class="message user-message alert-<?php echo htmlspecialchars($msg['nivel_alerta']); ?>">
-                        <strong>Tú:</strong> <?php echo htmlspecialchars($msg['mensaje']); ?>
-                        <div class="timestamp"><?php echo date('d/m/Y H:i', strtotime($msg['fecha'])); ?></div>
-                    </div>
-                    <?php if (!empty($msg['respuesta_ia'])): ?>
-                        <div class="message ia-message alert-<?php echo htmlspecialchars($msg['nivel_alerta']); ?>">
-                            <strong>IA:</strong> <?php echo htmlspecialchars($msg['respuesta_ia']); ?>
-                            <div class="timestamp"><?php echo date('d/m/Y H:i', strtotime($msg['fecha'])); ?></div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
+            <div class="chat-history" id="chatHistory"></div>
             <div class="suggestions">
                 <button class="suggestion-button" onclick="sendSuggestion('¿Cómo manejar el estrés diario?')">¿Cómo manejar el estrés?</button>
                 <button class="suggestion-button" onclick="sendSuggestion('Siento ansiedad')">Siento ansiedad</button>
@@ -526,13 +406,36 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
 
-        // Enviar mensaje con AJAX
-        function sendMessage() {
+        // Cargar historial de mensajes desde localStorage
+        function loadMessages() {
+            const userId = localStorage.getItem('user_id');
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]').filter(m => m.user_id === userId);
+            const chatHistory = document.getElementById('chatHistory');
+            chatHistory.innerHTML = '';
+            messages.forEach(msg => {
+                const userMessage = document.createElement('div');
+                userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
+                userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${msg.fecha}</div>`;
+                chatHistory.appendChild(userMessage);
+
+                const iaMessage = document.createElement('div');
+                iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
+                iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta}<div class="timestamp">${msg.fecha}</div>`;
+                chatHistory.appendChild(iaMessage);
+            });
+            scrollToBottom();
+        }
+
+        // Enviar mensaje con la API de OpenAI
+        async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
             const errorMessage = document.getElementById('errorMessage');
             const successMessage = document.getElementById('successMessage');
             const loadingBar = document.getElementById('loadingBar');
+            const chatHistory = document.getElementById('chatHistory');
+            const userId = localStorage.getItem('user_id');
+            const apiKey = 'sk-proj-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Reemplaza con tu clave de API de OpenAI
 
             if (!message) {
                 errorMessage.textContent = 'Por favor, escribe un mensaje.';
@@ -541,51 +444,83 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 return;
             }
 
-            // Mostrar barra de carga
             loadingBar.style.display = 'block';
 
-            fetch('chat.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `action=send_message&mensaje=${encodeURIComponent(message)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingBar.style.display = 'none';
-                if (data.error) {
-                    errorMessage.textContent = data.error;
-                    errorMessage.style.display = 'block';
-                    setTimeout(() => errorMessage.style.display = 'none', 3000);
-                } else {
-                    successMessage.textContent = 'Mensaje enviado.';
-                    successMessage.style.display = 'block';
-                    setTimeout(() => successMessage.style.display = 'none', 3000);
+            // Determinar nivel de alerta
+            let nivel_alerta = 'verde';
+            const mensaje_lower = message.toLowerCase();
+            const palabras_rojo = ['suicidio', 'quiero morir', 'autolesión', 'cortarme', 'matarme', 'crisis severa', 'ayuda urgente', 'desesperado'];
+            const palabras_anaranjado = ['ansiedad', 'ansioso', 'triste', 'deprimido', 'estresado', 'nervioso', 'preocupado', 'confundido', 'solo', 'abrumado', 'problemas serios'];
 
-                    // Agregar mensaje al historial
-                    const chatHistory = document.getElementById('chatHistory');
-                    const userMessage = document.createElement('div');
-                    userMessage.className = `message user-message alert-${data.nivel_alerta}`;
-                    userMessage.innerHTML = `<strong>Tú:</strong> ${data.mensaje}<div class="timestamp">${data.fecha}</div>`;
-                    chatHistory.appendChild(userMessage);
-
-                    const iaMessage = document.createElement('div');
-                    iaMessage.className = `message ia-message alert-${data.nivel_alerta}`;
-                    iaMessage.innerHTML = `<strong>IA:</strong> ${data.respuesta}<div class="timestamp">${data.fecha}</div>`;
-                    chatHistory.appendChild(iaMessage);
-
-                    scrollToBottom();
+            for (let palabra of palabras_rojo) {
+                if (mensaje_lower.includes(palabra)) {
+                    nivel_alerta = 'rojo';
+                    break;
                 }
-            })
-            .catch(error => {
+            }
+            if (nivel_alerta === 'verde') {
+                for (let palabra of palabras_anaranjado) {
+                    if (mensaje_lower.includes(palabra)) {
+                        nivel_alerta = 'anaranjado';
+                        break;
+                    }
+                }
+            }
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [
+                            { role: 'system', content: 'Eres un psicólogo virtual empático y profesional. Responde en español de manera útil y supportive. Mantén las respuestas breves pero significativas.' },
+                            { role: 'user', content: message }
+                        ],
+                        max_tokens: 150,
+                        temperature: 0.7
+                    })
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'Error en la API de OpenAI');
+                }
+                const respuesta = data.choices[0].message.content.trim();
+
+                // Guardar mensaje en localStorage
+                const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+                const fecha = new Date().toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const newMessage = { user_id: userId, mensaje: message, respuesta, nivel_alerta, fecha };
+                messages.push(newMessage);
+                localStorage.setItem('messages', JSON.stringify(messages));
+
+                // Mostrar mensaje en el historial
+                const userMessage = document.createElement('div');
+                userMessage.className = `message user-message alert-${nivel_alerta}`;
+                userMessage.innerHTML = `<strong>Tú:</strong> ${message}<div class="timestamp">${fecha}</div>`;
+                chatHistory.appendChild(userMessage);
+
+                const iaMessage = document.createElement('div');
+                iaMessage.className = `message ia-message alert-${nivel_alerta}`;
+                iaMessage.innerHTML = `<strong>IA:</strong> ${respuesta}<div class="timestamp">${fecha}</div>`;
+                chatHistory.appendChild(iaMessage);
+
+                successMessage.textContent = 'Mensaje enviado.';
+                successMessage.style.display = 'block';
+                setTimeout(() => successMessage.style.display = 'none', 3000);
+
                 loadingBar.style.display = 'none';
-                errorMessage.textContent = 'Error al enviar el mensaje.';
+                messageInput.value = '';
+                scrollToBottom();
+            } catch (error) {
+                loadingBar.style.display = 'none';
+                errorMessage.textContent = 'Error al enviar el mensaje: ' + error.message;
                 errorMessage.style.display = 'block';
                 setTimeout(() => errorMessage.style.display = 'none', 3000);
-            });
-
-            messageInput.value = '';
+            }
         }
 
         // Enviar sugerencia
@@ -594,15 +529,15 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             sendMessage();
         }
 
-        // Llamar al cargar la página
-        window.onload = scrollToBottom;
-
         // Escuchar Enter para enviar
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
+
+        // Cargar mensajes al iniciar
+        window.onload = loadMessages;
     </script>
 </body>
 </html>

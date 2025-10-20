@@ -1,95 +1,3 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-require 'conexion.php';
-
-// Verificar si el usuario está autenticado
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Obtener información del usuario
-$user_id = $_SESSION['user_id'];
-try {
-    $sql = "SELECT username, grade, phone, age, email FROM usuarios WHERE id = :user_id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['user_id' => $user_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$user) {
-        $mensaje_error = "Usuario no encontrado.";
-        unset($_SESSION['user_id']);
-        header("Location: login.php");
-        exit;
-    }
-    $username = $user['username'];
-    $grade = $user['grade'];
-    $phone = $user['phone'] ?? '';
-    $age = $user['age'] ?? '';
-    $email = $user['email'] ?? '';
-    // Extraer los 9 dígitos de manera segura
-    $phone_digits = '';
-    if (!empty($phone) && preg_match('/^\+51(\d{9})$/', $phone, $matches)) {
-        $phone_digits = $matches[1] ?? '';
-    }
-} catch (PDOException $e) {
-    $mensaje_error = "Error al obtener datos del usuario: " . $e->getMessage();
-}
-
-// Procesar actualización del perfil
-$mensaje_exito = '';
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
-    $new_username = trim($_POST['username']);
-    $new_grade = trim($_POST['grade']);
-    $new_other_grade = isset($_POST['other_grade']) ? trim($_POST['other_grade']) : '';
-    $new_phone_digits = trim($_POST['phone_digits'] ?? '');
-    $new_age = trim($_POST['age']);
-    $new_email = trim($_POST['email']);
-
-    // Construir el grado final
-    $final_grade = ($new_grade === 'Otro') ? $new_other_grade : $new_grade;
-
-    // Construir el número completo con +51
-    $new_phone = $new_phone_digits ? '+51' . $new_phone_digits : null;
-
-    // Validar campos
-    if (empty($new_username) || empty($new_grade)) {
-        $mensaje_error = "Por favor, completa los campos obligatorios (nombre de usuario y grado).";
-    } elseif ($new_grade === 'Otro' && empty($new_other_grade)) {
-        $mensaje_error = "Por favor, especifica tu grado en el campo 'Otro'.";
-    } elseif (!empty($new_phone_digits) && !preg_match('/^\d{9}$/', $new_phone_digits)) {
-        $mensaje_error = "El número de celular debe tener exactamente 9 dígitos.";
-    } elseif (!empty($new_age) && ($new_age < 1 || $new_age > 120)) {
-        $mensaje_error = "La edad debe estar entre 1 y 120 años.";
-    } elseif (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
-        $mensaje_error = "Por favor, ingresa un correo electrónico válido.";
-    } else {
-        try {
-            $sql = "UPDATE usuarios SET username = :username, grade = :grade, phone = :phone, age = :age, email = :email WHERE id = :user_id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                'username' => $new_username,
-                'grade' => $final_grade,
-                'phone' => $new_phone,
-                'age' => $new_age ?: null,
-                'email' => $new_email ?: null,
-                'user_id' => $user_id
-            ]);
-            $mensaje_exito = "Perfil actualizado correctamente.";
-            $username = $new_username;
-            $grade = $final_grade;
-            $phone = $new_phone;
-            $age = $new_age;
-            $email = $new_email;
-            $phone_digits = $new_phone_digits;
-        } catch (PDOException $e) {
-            $mensaje_error = "Error al actualizar el perfil: " . $e->getMessage();
-        }
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -374,17 +282,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
 
             input[type="text"],
             input[type="email"],
-            input[type="password"],
+            input[type="number"],
             select {
                 font-size: 13px;
                 padding: 8px 36px 8px 10px;
                 border-radius: 6px;
-            }
-
-            .form-group i {
-                top: 32px;
-                right: 10px;
-                font-size: 14px;
             }
 
             select {
@@ -431,8 +333,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     </style>
 </head>
 <body>
+    <script>
+        // Verificar si el usuario está autenticado
+        if (!localStorage.getItem('user_id')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
     <div class="container">
-        <a href="dashboard.php" class="back-button" title="Volver al dashboard">
+        <a href="dashboard.html" class="back-button" title="Volver al dashboard">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div class="logo">
@@ -440,67 +349,97 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
         </div>
         <h2>Editar Perfil</h2>
 
-        <?php if (isset($mensaje_error)): ?>
-            <p class="error"><?php echo htmlspecialchars($mensaje_error); ?></p>
-        <?php endif; ?>
-        <?php if (isset($mensaje_exito)): ?>
-            <p class="success"><?php echo htmlspecialchars($mensaje_exito); ?></p>
-        <?php endif; ?>
+        <div id="message-container"></div>
 
-        <form method="POST">
+        <form id="edit-profile-form">
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
-                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" required>
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="grade">Grado Escolar</label>
                 <select id="grade" name="grade" required>
                     <option value="">Selecciona tu grado</option>
-                    <option value="Primero" <?php echo $grade == 'Primero' ? 'selected' : ''; ?>>Primero</option>
-                    <option value="Segundo" <?php echo $grade == 'Segundo' ? 'selected' : ''; ?>>Segundo</option>
-                    <option value="Tercero" <?php echo $grade == 'Tercero' ? 'selected' : ''; ?>>Tercero</option>
-                    <option value="Cuarto" <?php echo $grade == 'Cuarto' ? 'selected' : ''; ?>>Cuarto</option>
-                    <option value="Quinto" <?php echo $grade == 'Quinto' ? 'selected' : ''; ?>>Quinto</option>
-                    <option value="Otro" <?php echo ($grade != 'Primero' && $grade != 'Segundo' && $grade != 'Tercero' && $grade != 'Cuarto' && $grade != 'Quinto') ? 'selected' : ''; ?>>Otro</option>
+                    <option value="Primero">Primero</option>
+                    <option value="Segundo">Segundo</option>
+                    <option value="Tercero">Tercero</option>
+                    <option value="Cuarto">Cuarto</option>
+                    <option value="Quinto">Quinto</option>
+                    <option value="Otro">Otro</option>
                 </select>
                 <i class="fas fa-graduation-cap"></i>
             </div>
             <div class="form-group" id="other_grade_group">
                 <label for="other_grade">Especifica tu Grado</label>
-                <input type="text" id="other_grade" name="other_grade" value="<?php echo ($grade != 'Primero' && $grade != 'Segundo' && $grade != 'Tercero' && $grade != 'Cuarto' && $grade != 'Quinto') ? htmlspecialchars($grade) : ''; ?>" placeholder="Ej: Preparatoria, Universidad" maxlength="50">
+                <input type="text" id="other_grade" name="other_grade" placeholder="Ej: Preparatoria, Universidad" maxlength="50">
                 <i class="fas fa-graduation-cap"></i>
             </div>
             <div class="form-group">
                 <label for="phone">Número de Celular</label>
                 <div class="phone-container">
                     <input type="tel" id="phone_prefix" name="phone_prefix" value="+51" readonly>
-                    <input type="text" id="phone_digits" name="phone_digits" value="<?php echo htmlspecialchars($phone_digits); ?>" pattern="[0-9]{9}" maxlength="9" placeholder="Ej: 912345678">
+                    <input type="text" id="phone_digits" name="phone_digits" pattern="[0-9]{9}" maxlength="9" placeholder="Ej: 912345678">
                 </div>
             </div>
             <div class="form-group">
                 <label for="age">Edad</label>
-                <input type="number" id="age" name="age" value="<?php echo htmlspecialchars($age); ?>" min="1" max="120" placeholder="Ej: 25">
+                <input type="number" id="age" name="age" min="1" max="120" placeholder="Ej: 25">
             </div>
             <div class="form-group">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" placeholder="Ej: ejemplo@correo.com">
+                <input type="email" id="email" name="email" placeholder="Ej: ejemplo@correo.com">
             </div>
-            <button type="submit" name="update_profile" class="button">Actualizar Perfil</button>
+            <button type="submit" class="button">Actualizar Perfil</button>
         </form>
 
         <hr>
 
         <div class="action-buttons">
-            <a href="dashboard.php" class="button">Volver al Dashboard</a>
+            <a href="dashboard.html" class="button">Volver al Dashboard</a>
         </div>
     </div>
 
     <script>
-        // Mostrar/ocultar campo de "Otro" grado
+        // Cargar datos del usuario desde localStorage
+        const userId = localStorage.getItem('user_id');
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const user = users.find(u => u.email === userId);
+        const usernameInput = document.getElementById('username');
         const gradeSelect = document.getElementById('grade');
-        const otherGradeGroup = document.getElementById('other_grade_group');
         const otherGradeInput = document.getElementById('other_grade');
+        const phoneDigitsInput = document.getElementById('phone_digits');
+        const ageInput = document.getElementById('age');
+        const emailInput = document.getElementById('email');
+        const otherGradeGroup = document.getElementById('other_grade_group');
 
+        if (user) {
+            usernameInput.value = user.username || '';
+            emailInput.value = user.email || '';
+            ageInput.value = user.age || '';
+            phoneDigitsInput.value = user.phone ? user.phone.replace('+51', '') : '';
+            const predefinedGrades = ['Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto'];
+            if (predefinedGrades.includes(user.grade)) {
+                gradeSelect.value = user.grade;
+                otherGradeGroup.style.display = 'none';
+                otherGradeInput.removeAttribute('required');
+            } else {
+                gradeSelect.value = 'Otro';
+                otherGradeInput.value = user.grade || '';
+                otherGradeGroup.style.display = 'block';
+                otherGradeInput.setAttribute('required', 'required');
+            }
+        } else {
+            const errorDiv = document.createElement('p');
+            errorDiv.className = 'error';
+            errorDiv.textContent = 'Usuario no encontrado.';
+            document.getElementById('message-container').appendChild(errorDiv);
+            setTimeout(() => {
+                localStorage.removeItem('user_id');
+                window.location.href = 'login.html';
+            }, 2000);
+        }
+
+        // Mostrar/ocultar campo de "Otro" grado
         gradeSelect.addEventListener('change', function () {
             if (this.value === 'Otro') {
                 otherGradeGroup.style.display = 'block';
@@ -512,13 +451,71 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
             }
         });
 
-        // Inicializar visibilidad del campo "Otro"
-        if (gradeSelect.value !== 'Otro') {
-            otherGradeGroup.style.display = 'none';
-        } else {
-            otherGradeGroup.style.display = 'block';
-            otherGradeInput.setAttribute('required', 'required');
-        }
+        // Manejo del formulario de edición
+        const form = document.getElementById('edit-profile-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const grade = gradeSelect.value;
+            const otherGrade = otherGradeInput.value.trim();
+            const phoneDigits = phoneDigitsInput.value.trim();
+            const age = ageInput.value.trim();
+            const email = emailInput.value.trim();
+
+            const messageContainer = document.getElementById('message-container');
+            const errorDiv = document.createElement('p');
+            errorDiv.className = 'error';
+            const successDiv = document.createElement('p');
+            successDiv.className = 'success';
+            messageContainer.innerHTML = '';
+
+            // Validaciones
+            if (!username || !grade) {
+                errorDiv.textContent = 'Por favor, completa los campos obligatorios (nombre de usuario y grado).';
+                messageContainer.appendChild(errorDiv);
+                return;
+            }
+            if (grade === 'Otro' && !otherGrade) {
+                errorDiv.textContent = "Por favor, especifica tu grado en el campo 'Otro'.";
+                messageContainer.appendChild(errorDiv);
+                return;
+            }
+            if (phoneDigits && !/^\d{9}$/.test(phoneDigits)) {
+                errorDiv.textContent = 'El número de celular debe tener exactamente 9 dígitos.';
+                messageContainer.appendChild(errorDiv);
+                return;
+            }
+            if (age && (age < 1 || age > 120)) {
+                errorDiv.textContent = 'La edad debe estar entre 1 y 120 años.';
+                messageContainer.appendChild(errorDiv);
+                return;
+            }
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
+                messageContainer.appendChild(errorDiv);
+                return;
+            }
+
+            // Actualizar datos en localStorage
+            const finalGrade = grade === 'Otro' ? otherGrade : grade;
+            const updatedUser = {
+                ...user,
+                username,
+                grade: finalGrade,
+                phone: phoneDigits ? `+51${phoneDigits}` : '',
+                age: age || '',
+                email: email || ''
+            };
+
+            const updatedUsers = users.map(u => (u.email === userId ? updatedUser : u));
+            localStorage.setItem('users', JSON.stringify(updatedUsers));
+            localStorage.setItem('username', username);
+            localStorage.setItem('grade', finalGrade);
+
+            // Mostrar mensaje de éxito
+            successDiv.textContent = 'Perfil actualizado correctamente.';
+            messageContainer.appendChild(successDiv);
+        });
     </script>
 </body>
 </html>

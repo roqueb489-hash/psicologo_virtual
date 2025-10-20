@@ -1,3 +1,67 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require 'conexion.php';
+
+// Verificar si el usuario ya está autenticado
+if (isset($_SESSION['user_id'])) {
+    header("Location: dashboard.php");
+    exit;
+}
+
+// Procesar el formulario de registro
+$mensaje_error = '';
+$mensaje_exito = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+    $confirm_password = trim($_POST['confirm_password']);
+    $grade = trim($_POST['grade']);
+    $other_grade = isset($_POST['other_grade']) ? trim($_POST['other_grade']) : '';
+
+    // Validaciones
+    if (empty($username) || empty($email) || empty($password) || empty($confirm_password) || empty($grade)) {
+        $mensaje_error = "Por favor, completa todos los campos.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $mensaje_error = "Por favor, ingresa un correo electrónico válido.";
+    } elseif (strlen($password) < 8) {
+        $mensaje_error = "La contraseña debe tener al menos 8 caracteres.";
+    } elseif ($password !== $confirm_password) {
+        $mensaje_error = "Las contraseñas no coinciden.";
+    } elseif ($grade === 'Otro' && empty($other_grade)) {
+        $mensaje_error = "Por favor, especifica tu grado en el campo 'Otro'.";
+    } else {
+        try {
+            // Verificar si el usuario o correo ya existen
+            $sql = "SELECT id FROM usuarios WHERE username = :username OR email = :email";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['username' => $username, 'email' => $email]);
+            if ($stmt->fetch()) {
+                $mensaje_error = "El usuario o correo ya está registrado.";
+            } else {
+                // Hashear la contraseña y determinar el grado a guardar
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $final_grade = ($grade === 'Otro') ? $other_grade : $grade;
+
+                // Insertar el usuario
+                $sql = "INSERT INTO usuarios (username, email, password, grade) VALUES (:username, :email, :password, :grade)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    'username' => $username,
+                    'email' => $email,
+                    'password' => $hashed_password,
+                    'grade' => $final_grade
+                ]);
+                $mensaje_exito = "¡Registro exitoso! Ahora puedes <a href='login.php'>iniciar sesión</a>.";
+            }
+        } catch (PDOException $e) {
+            $mensaje_error = "Error en la base de datos: " . $e->getMessage();
+        }
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -443,4 +507,5 @@
     </script>
 </body>
 </html>
+
 

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicólogo Virtual - Bienvenida</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb; /* Vibrant blue */
+            --secondary: #14b8a6; /* Teal for energy */
+            --accent: #f59e0b; /* Warm yellow for pop */
+            --white: #ffffff;
+            --gray-100: #f3f4f6;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gradient-body: linear-gradient(135deg, #dbeafe 0%, #ccfbf1 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-body);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeInUp 0.5s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .features {
+            margin: 2rem 0;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            background: var(--gray-100);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-item i {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .feature-item p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Psicólogo Virtual</h1>
+        <p>Tu compañero de bienestar emocional, siempre listo para ayudarte a gestionar tus emociones con inteligencia artificial empática.</p>
+        
+        <div class="features">
+            <div class="feature-item">
+                <i class="fas fa-comment"></i>
+                <p>Chatea con un psicólogo virtual disponible 24/7.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-brain"></i>
+                <p>Análisis emocional en tiempo real con alertas inteligentes.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-heart"></i>
+                <p>Registra y monitorea tu estado emocional diario.</p>
+            </div>
+        </div>
+
+        <a href="https://github.com/your-username/your-repository" class="button">Explora el Proyecto en GitHub</a>
+        <p>¿Listo para empezar? <a href="login.html">Inicia sesión</a> o <a href="register.html">regístrate</a>.</p>
+
+        <div class="footer">
+            <p>&copy; 2025 Psicólogo Virtual. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

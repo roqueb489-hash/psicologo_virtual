@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary: #2563eb; /* Vibrant blue */
+            --primary: #2563eb;
             --primary-dark: #1e40af;
-            --secondary: #14b8a6; /* Teal for energy */
-            --accent: #f59e0b; /* Warm yellow for pop */
+            --secondary: #14b8a6;
+            --accent: #f59e0b;
             --success: #22c55e;
             --white: #ffffff;
             --gray-100: #f3f4f6;
@@ -406,27 +406,47 @@
             }
         }
 
-        // Cargar historial de mensajes desde localStorage
-        function loadMessages() {
+        // Cargar historial de mensajes desde el backend
+        async function loadMessages() {
             const userId = localStorage.getItem('user_id');
-            const messages = JSON.parse(localStorage.getItem('messages') || '[]').filter(m => m.user_id === userId);
+            const errorMessage = document.getElementById('errorMessage');
             const chatHistory = document.getElementById('chatHistory');
-            chatHistory.innerHTML = '';
-            messages.forEach(msg => {
-                const userMessage = document.createElement('div');
-                userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
-                userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${msg.fecha}</div>`;
-                chatHistory.appendChild(userMessage);
 
-                const iaMessage = document.createElement('div');
-                iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
-                iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta}<div class="timestamp">${msg.fecha}</div>`;
-                chatHistory.appendChild(iaMessage);
-            });
-            scrollToBottom();
+            try {
+                const response = await fetch('chat.php?action=load_messages', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('user_id')}`
+                    }
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al cargar mensajes');
+                }
+
+                chatHistory.innerHTML = '';
+                data.messages.forEach(msg => {
+                    const userMessage = document.createElement('div');
+                    userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
+                    userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${msg.fecha}</div>`;
+                    chatHistory.appendChild(userMessage);
+
+                    if (msg.respuesta_ia) {
+                        const iaMessage = document.createElement('div');
+                        iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
+                        iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta_ia}<div class="timestamp">${msg.fecha}</div>`;
+                        chatHistory.appendChild(iaMessage);
+                    }
+                });
+                scrollToBottom();
+            } catch (error) {
+                errorMessage.textContent = 'Error al cargar mensajes: ' + error.message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+            }
         }
 
-        // Enviar mensaje con la API de OpenAI
+        // Enviar mensaje al backend
         async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
@@ -435,7 +455,6 @@
             const loadingBar = document.getElementById('loadingBar');
             const chatHistory = document.getElementById('chatHistory');
             const userId = localStorage.getItem('user_id');
-            const apiKey = 'sk-proj-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'; // Reemplaza con tu clave de API de OpenAI
 
             if (!message) {
                 errorMessage.textContent = 'Por favor, escribe un mensaje.';
@@ -446,61 +465,26 @@
 
             loadingBar.style.display = 'block';
 
-            // Determinar nivel de alerta
-            let nivel_alerta = 'verde';
-            const mensaje_lower = message.toLowerCase();
-            const palabras_rojo = ['suicidio', 'quiero morir', 'autolesión', 'cortarme', 'matarme', 'crisis severa', 'ayuda urgente', 'desesperado'];
-            const palabras_anaranjado = ['ansiedad', 'ansioso', 'triste', 'deprimido', 'estresado', 'nervioso', 'preocupado', 'confundido', 'solo', 'abrumado', 'problemas serios'];
-
-            for (let palabra of palabras_rojo) {
-                if (mensaje_lower.includes(palabra)) {
-                    nivel_alerta = 'rojo';
-                    break;
-                }
-            }
-            if (nivel_alerta === 'verde') {
-                for (let palabra of palabras_anaranjado) {
-                    if (mensaje_lower.includes(palabra)) {
-                        nivel_alerta = 'anaranjado';
-                        break;
-                    }
-                }
-            }
-
             try {
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                const response = await fetch('chat.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
+                        'Authorization': `Bearer ${userId}`
                     },
-                    body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
-                        messages: [
-                            { role: 'system', content: 'Eres un psicólogo virtual empático y profesional. Responde en español de manera útil y supportive. Mantén las respuestas breves pero significativas.' },
-                            { role: 'user', content: message }
-                        ],
-                        max_tokens: 150,
-                        temperature: 0.7
-                    })
+                    body: JSON.stringify({ action: 'send_message', mensaje: message, user_id: userId })
                 });
                 const data = await response.json();
                 if (!response.ok) {
-                    throw new Error(data.error?.message || 'Error en la API de OpenAI');
+                    throw new Error(data.error || 'Error al procesar el mensaje');
                 }
-                const respuesta = data.choices[0].message.content.trim();
 
-                // Guardar mensaje en localStorage
-                const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-                const fecha = new Date().toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                const newMessage = { user_id: userId, mensaje: message, respuesta, nivel_alerta, fecha };
-                messages.push(newMessage);
-                localStorage.setItem('messages', JSON.stringify(messages));
+                const { mensaje, respuesta, nivel_alerta, fecha } = data;
 
                 // Mostrar mensaje en el historial
                 const userMessage = document.createElement('div');
                 userMessage.className = `message user-message alert-${nivel_alerta}`;
-                userMessage.innerHTML = `<strong>Tú:</strong> ${message}<div class="timestamp">${fecha}</div>`;
+                userMessage.innerHTML = `<strong>Tú:</strong> ${mensaje}<div class="timestamp">${fecha}</div>`;
                 chatHistory.appendChild(userMessage);
 
                 const iaMessage = document.createElement('div');

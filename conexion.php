@@ -6,8 +6,8 @@ if (!defined('ACCESS')) {
 
 $host = 'localhost';
 $dbname = 'psicologo_virtual';
-$username = 'root'; // Reemplaza con un usuario seguro de MySQL
-$password = ''; // Reemplaza con una contraseña segura
+$username = 'root'; // Por defecto en XAMPP
+$password = ''; // Sin contraseña por defecto en XAMPP
 
 try {
     $pdo = new PDO(
@@ -22,6 +22,8 @@ try {
     );
 } catch (PDOException $e) {
     error_log("Connection error: " . $e->getMessage());
-    die("Unable to connect to the database. Please try again later.");
+    http_response_code(500);
+    echo json_encode(['error' => 'Unable to connect to the database. Please try again later.']);
+    exit;
 }
 ?>

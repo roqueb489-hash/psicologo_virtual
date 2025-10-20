@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary: #2563eb;
+            --primary: #2563eb; /* Vibrant blue */
             --primary-dark: #1e40af;
-            --secondary: #14b8a6;
-            --accent: #f59e0b;
+            --secondary: #14b8a6; /* Teal for energy */
+            --accent: #f59e0b; /* Warm yellow for pop */
             --success: #22c55e;
             --white: #ffffff;
             --gray-100: #f3f4f6;
@@ -31,14 +31,24 @@
 
         body {
             font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gradient-body);
+            background: url('https://images.unsplash.com/photo-1516321310764-8d8f6c0c77c0?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
             color: var(--gray-800);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
         }
 
         .container {
@@ -47,11 +57,12 @@
             max-width: 400px;
             width: 90%;
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             animation: fadeInUp 0.5s ease-in-out;
             position: relative;
             text-align: center;
+            z-index: 1;
         }
 
         @keyframes fadeInUp {
@@ -126,7 +137,9 @@
             color: var(--primary);
         }
 
-        input {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
             width: 100%;
             padding: 12px 45px 12px 15px;
             border: 1px solid var(--gray-200);
@@ -171,7 +184,7 @@
         }
 
         button:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 

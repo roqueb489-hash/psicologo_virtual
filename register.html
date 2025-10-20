@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary: #2563eb;
+            --primary: #2563eb; /* Vibrant blue */
             --primary-dark: #1e40af;
-            --secondary: #14b8a6;
-            --accent: #f59e0b;
+            --secondary: #14b8a6; /* Teal for energy */
+            --accent: #f59e0b; /* Warm yellow for pop */
             --success: #22c55e;
             --white: #ffffff;
             --gray-100: #f3f4f6;
@@ -31,43 +31,55 @@
 
         body {
             font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gradient-body);
+            background: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
             color: var(--gray-800);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
         }
 
         .container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            max-width: 400px;
-            width: 90%;
-            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             animation: fadeInUp 0.5s ease-in-out;
             position: relative;
             text-align: center;
+            z-index: 1;
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .back-button {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: var(--primary);
             color: var(--white);
             border-radius: 50%;
@@ -78,68 +90,78 @@
         .back-button:hover {
             background: var(--primary-dark);
             transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .back-button i {
-            font-size: 18px;
+            font-size: 16px;
+        }
+
+        .logo {
+            margin-bottom: 15px;
+        }
+
+        .logo img {
+            width: 100px;
+            height: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
         h2 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             position: relative;
+            text-align: left;
         }
 
         label {
             display: block;
             color: var(--gray-800);
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 13px;
             font-weight: 500;
-            transition: color 0.3s ease;
+            margin-bottom: 6px;
         }
 
-        .form-group:focus-within label {
-            color: var(--primary);
-        }
-
-        input, select {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
             width: 100%;
-            padding: 12px 45px 12px 15px;
+            padding: 10px 40px 10px 12px;
             border: 1px solid var(--gray-200);
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 14px;
             transition: border-color 0.3s, box-shadow 0.3s;
             background: var(--gray-100);
         }
 
         select {
-            padding: 12px 40px 12px 15px;
+            appearance: none;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
             background-size: 10px;
-            appearance: none;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
             background: var(--white);
         }
 
         .form-group i {
             position: absolute;
-            top: 38px;
-            right: 15px;
+            top: 34px;
+            right: 12px;
             color: var(--gray-600);
-            font-size: 18px;
+            cursor: pointer;
+            font-size: 16px;
             transition: color 0.3s ease;
         }
 
@@ -147,13 +169,30 @@
             color: var(--primary);
         }
 
+        #other_grade_group {
+            display: none;
+            animation: fadeInUp 0.3s ease-in-out;
+            background: var(--gray-100);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        #other_grade {
+            background: var(--white);
+        }
+
+        #other_grade:focus {
+            background: var(--white);
+        }
+
         button {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             background: var(--gradient-primary);
             color: var(--white);
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -162,26 +201,26 @@
 
         button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .error {
             color: #dc2626;
-            font-size: 14px;
+            font-size: 13px;
             background: #fee2e2;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             animation: fadeInError 0.3s ease-in;
         }
 
         .success {
             color: #15803d;
-            font-size: 14px;
+            font-size: 13px;
             background: #dcfce7;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             animation: fadeInError 0.3s ease-in;
         }
 
@@ -191,9 +230,8 @@
         }
 
         .login-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 15px;
+            font-size: 13px;
             color: var(--gray-600);
         }
 
@@ -210,22 +248,87 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding: 10px;
+            }
+
             .container {
-                padding: 25px;
+                padding: 20px;
+                margin: 10px;
+                border-radius: 12px;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            }
+
+            .logo img {
+                width: 80px;
             }
 
             h2 {
-                font-size: 24px;
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+
+            .back-button {
+                width: 32px;
+                height: 32px;
+                top: 10px;
+                left: 10px;
+            }
+
+            .back-button i {
+                font-size: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            label {
+                font-size: 12px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            select {
+                font-size: 13px;
+                padding: 8px 36px 8px 10px;
+                border-radius: 6px;
+            }
+
+            .form-group i {
+                top: 32px;
+                right: 10px;
+                font-size: 14px;
+            }
+
+            select {
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+                background-size: 8px;
+            }
+
+            #other_grade_group {
+                padding: 8px;
+                margin-top: 8px;
             }
 
             button {
                 font-size: 14px;
-                padding: 12px;
+                padding: 10px;
+                border-radius: 6px;
             }
 
-            .back-button {
-                width: 35px;
-                height: 35px;
+            .error,
+            .success {
+                font-size: 12px;
+                padding: 6px;
+                border-radius: 4px;
+            }
+
+            .login-link {
+                font-size: 12px;
+                margin-top: 12px;
             }
         }
     </style>
@@ -260,7 +363,7 @@
             <div class="form-group">
                 <label for="grade">Grado Escolar</label>
                 <select id="grade" name="grade" required>
-                    <option value="" disabled selected>Selecciona tu grado</option>
+                    <option value="">Selecciona tu grado</option>
                     <option value="1ro de Secundaria">1ro de Secundaria</option>
                     <option value="2do de Secundaria">2do de Secundaria</option>
                     <option value="3ro de Secundaria">3ro de Secundaria</option>
@@ -270,7 +373,7 @@
                 </select>
                 <i class="fas fa-graduation-cap"></i>
             </div>
-            <div class="form-group" id="other_grade_group" style="display: none;">
+            <div class="form-group" id="other_grade_group">
                 <label for="other_grade">Especifica tu Grado</label>
                 <input type="text" id="other_grade" name="other_grade" placeholder="Ej: Preparatoria, Universidad" maxlength="50">
                 <i class="fas fa-graduation-cap"></i>
@@ -294,28 +397,72 @@
     </div>
 
     <script>
+        // Alternar visibilidad de las contraseñas
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Mostrar/ocultar campo de "Otro" grado
+        const gradeSelect = document.getElementById('grade');
+        const otherGradeGroup = document.getElementById('other_grade_group');
+        const otherGradeInput = document.getElementById('other_grade');
+
+        gradeSelect.addEventListener('change', function () {
+            if (this.value === 'Otro') {
+                otherGradeGroup.style.display = 'block';
+                otherGradeInput.setAttribute('required', 'required');
+            } else {
+                otherGradeGroup.style.display = 'none';
+                otherGradeInput.removeAttribute('required');
+                otherGradeInput.value = '';
+            }
+        });
+
+        // Inicializar visibilidad del campo "Otro"
+        if (gradeSelect.value !== 'Otro') {
+            otherGradeGroup.style.display = 'none';
+        }
+
+        // Prevenir zoom no deseado al enfocar inputs en móviles
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                document.body.style.overflow = 'hidden';
+            });
+            input.addEventListener('blur', () => {
+                document.body.style.overflow = '';
+            });
+        });
+
         // Manejo del formulario de registro
         const form = document.querySelector('#register-form');
-        const errorDiv = document.createElement('p');
-        errorDiv.className = 'error';
-        const successDiv = document.createElement('p');
-        successDiv.className = 'success';
+        const messageContainer = document.getElementById('message-container');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = form.querySelector('#username').value.trim();
             const email = form.querySelector('#email').value.trim();
-            const password = form.querySelector('#password').value.trim();
-            const confirmPassword = form.querySelector('#confirm_password').value.trim();
             const grade = form.querySelector('#grade').value;
             const otherGrade = form.querySelector('#other_grade').value.trim();
-            const messageContainer = document.getElementById('message-container');
-            errorDiv.textContent = '';
-            successDiv.textContent = '';
+            const password = form.querySelector('#password').value.trim();
+            const confirmPassword = form.querySelector('#confirm_password').value.trim();
+
+            const errorDiv = document.createElement('p');
+            errorDiv.className = 'error';
+            const successDiv = document.createElement('p');
+            successDiv.className = 'success';
             messageContainer.innerHTML = '';
 
             // Validaciones
-            if (!username || !email || !password || !confirmPassword || !grade) {
+            if (!username || !email || !grade || !password || !confirmPassword) {
                 errorDiv.textContent = 'Por favor, completa todos los campos.';
                 messageContainer.appendChild(errorDiv);
                 return;
@@ -341,52 +488,29 @@
                 return;
             }
 
-            // Simular registro con localStorage
+            // Verificar si el usuario o correo ya existen
             const users = JSON.parse(localStorage.getItem('users') || '[]');
-            if (users.some(user => user.email === email)) {
-                errorDiv.textContent = 'El correo ya está registrado.';
+            const userExists = users.some(u => u.username === username || u.email === email);
+            if (userExists) {
+                errorDiv.textContent = 'El usuario o correo ya está registrado.';
                 messageContainer.appendChild(errorDiv);
                 return;
             }
 
+            // Guardar usuario
             const finalGrade = grade === 'Otro' ? otherGrade : grade;
-            users.push({ username, email, password, grade: finalGrade });
+            const newUser = { username, email, password, grade: finalGrade };
+            users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
-            localStorage.setItem('user_id', email);
-            localStorage.setItem('username', username);
-            localStorage.setItem('grade', finalGrade);
+
+            // Mostrar mensaje de éxito
             successDiv.innerHTML = '¡Registro exitoso! Ahora puedes <a href="login.html">iniciar sesión</a>.';
             messageContainer.appendChild(successDiv);
+
+            // Limpiar formulario
             form.reset();
-        });
-
-        // Alternar visibilidad de contraseñas
-        const toggleButtons = document.querySelectorAll('.toggle-password');
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
-        });
-
-        // Mostrar/esconder campo de otro grado
-        const gradeSelect = document.getElementById('grade');
-        const otherGradeGroup = document.getElementById('other_grade_group');
-        const otherGradeInput = document.getElementById('other_grade');
-
-        gradeSelect.addEventListener('change', function () {
-            if (this.value === 'Otro') {
-                otherGradeGroup.style.display = 'block';
-                otherGradeInput.setAttribute('required', 'required');
-            } else {
-                otherGradeGroup.style.display = 'none';
-                otherGradeInput.removeAttribute('required');
-                otherGradeInput.value = '';
-            }
+            otherGradeGroup.style.display = 'none';
+            otherGradeInput.removeAttribute('required');
         });
     </script>
 </body>

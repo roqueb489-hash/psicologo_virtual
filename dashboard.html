@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard - Psicólogo Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -20,7 +21,6 @@
             --gray-800: #1f2937;
             --gradient-primary: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
             --gradient-hero: linear-gradient(135deg, #2563eb 0%, #14b8a6 50%, #f59e0b 100%);
-            --gradient-navbar: linear-gradient(90deg, #2563eb 0%, #14b8a6 100%);
             --gradient-body: linear-gradient(135deg, #dbeafe 0%, #ccfbf1 100%);
         }
 
@@ -30,32 +30,45 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            min-height: 100vh;
             font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--gradient-body);
+            background: url('https://images.unsplash.com/photo-1516321310764-8d8f6c0c77c0?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat scroll;
             color: var(--gray-800);
             line-height: 1.6;
-            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-            overflow-x: hidden;
+            align-items: center;
+            padding: 15px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
         }
 
         .container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             animation: fadeInUp 0.5s ease-in-out;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            z-index: 1;
         }
 
         @keyframes fadeInUp {
@@ -65,28 +78,26 @@
 
         .back-button {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 10px;
+            left: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             background: var(--primary);
             color: var(--white);
             border-radius: 50%;
             text-decoration: none;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            transition: background 0.3s ease;
         }
 
         .back-button:hover {
             background: var(--primary-dark);
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .back-button i {
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .logo {
@@ -94,43 +105,17 @@
         }
 
         .logo img {
-            width: 100px;
+            width: 90px;
             height: auto;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: none;
         }
 
         h2 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        p {
-            font-size: 16px;
-            color: var(--gray-600);
-            margin-bottom: 10px;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 12px 20px;
-            background: var(--gradient-primary);
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
-
-        .button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            margin-bottom: 8px;
         }
 
         .error {
@@ -140,7 +125,7 @@
             padding: 8px;
             border-radius: 6px;
             margin-bottom: 15px;
-            animation: fadeInError 0.3s ease-in;
+            display: none;
         }
 
         .success {
@@ -150,7 +135,7 @@
             padding: 8px;
             border-radius: 6px;
             margin-bottom: 15px;
-            animation: fadeInError 0.3s ease-in;
+            display: none;
         }
 
         @keyframes fadeInError {
@@ -158,71 +143,122 @@
             to { opacity: 1; }
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            position: relative;
-            text-align: left;
+        .dashboard-header {
+            margin-bottom: 20px;
         }
 
-        .form-group label {
-            display: block;
-            color: var(--gray-800);
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
-
-        select {
-            width: 100%;
-            padding: 10px 40px 10px 12px;
-            border: 1px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            background: var(--gray-100);
-            appearance: none;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
-            background-size: 10px;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
-            background: var(--white);
-        }
-
-        .form-group i {
-            position: absolute;
-            top: 34px;
-            right: 12px;
+        .dashboard-header p {
+            font-size: 1rem;
             color: var(--gray-600);
-            font-size: 16px;
         }
 
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        .dashboard-actions {
+            display: flex;
             gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: none;
+        }
+
+        .action-button.logout {
+            background: var(--gray-600);
+        }
+
+        .dashboard-section {
+            margin-top: 20px;
+        }
+
+        .dashboard-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .message-history {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 12px;
+            background: var(--gray-100);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: none;
+        }
+
+        .user-message {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary);
+        }
+
+        .ia-message {
+            background: #ccfbf1;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .alert-verde {
+            background-color: #d4edda !important;
+            border-left-color: var(--success) !important;
+            color: #155724;
+        }
+
+        .alert-anaranjado {
+            background-color: #fff3cd !important;
+            border-left-color: #f97316 !important;
+            color: #856404;
+        }
+
+        .alert-rojo {
+            background-color: #f8d7da !important;
+            border-left-color: #ef4444 !important;
+            color: #721c24;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: var(--gray-600);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .footer {
             margin-top: 15px;
+            font-size: 11px;
+            color: var(--gray-600);
+            text-align: center;
+            padding: 8px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        hr {
-            border: 0;
-            height: 1px;
-            background: var(--gray-200);
-            margin: 15px 0;
-        }
-
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
 
             .container {
                 padding: 20px;
-                margin: 10px;
-                border-radius: 12px;
+                width: 95%;
             }
 
             .logo img {
@@ -230,142 +266,249 @@
             }
 
             h2 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
 
             .back-button {
-                width: 32px;
-                height: 32px;
-                top: 10px;
-                left: 10px;
+                width: 28px;
+                height: 28px;
+                top: 8px;
+                left: 8px;
             }
 
-            .button {
-                font-size: 14px;
-                padding: 10px;
+            .back-button i {
+                font-size: 12px;
             }
 
-            select {
-                font-size: 13px;
-                padding: 8px 36px 8px 10px;
+            .message-history {
+                max-height: 200px;
             }
 
-            .action-buttons {
-                grid-template-columns: 1fr;
-                gap: 8px;
+            .action-button {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.9rem;
+            }
+
+            .dashboard-section h3 {
+                font-size: 1rem;
+            }
+
+            .message {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .action-button {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .message-history {
+                max-height: 150px;
+            }
+
+            .footer {
+                font-size: 10px;
+            }
+        }
+
+        @media (hover: none) {
+            .back-button, .action-button, .message {
+                transform: none !important;
+                transition: none !important;
             }
         }
     </style>
 </head>
 <body>
-    <script>
-        // Verificar autenticación
-        if (!localStorage.getItem('user_id')) {
-            window.location.href = 'login.html';
-        }
-
-        // Obtener datos del usuario
-        const username = localStorage.getItem('username') || 'Usuario';
-        const grade = localStorage.getItem('grade') || 'No especificado';
-
-        // Generar saludo según la hora
-        const hora = new Date().getHours();
-        const saludo = hora >= 5 && hora < 12 ? '¡Buenos días' : 
-                       hora >= 12 && hora < 18 ? '¡Buenas tardes' : 
-                       '¡Buenas noches';
-
-        // Contar mensajes
-        const mensajes = JSON.parse(localStorage.getItem('mensajes') || '[]');
-        const conteo_mensajes = mensajes.filter(m => m.user_id === localStorage.getItem('user_id')).length;
-    </script>
-
     <div class="container">
         <a href="index.html" class="back-button" title="Volver al inicio">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div class="logo">
-            <img src="perfil.jpeg" alt="Psicólogo Virtual Logo">
+            <img src="logo.jpeg" alt="Psicólogo Virtual Logo">
         </div>
-        <h2 id="saludo"></h2>
-        <div id="message-container"></div>
-        <p>Estás registrado en: <span id="grade"></span></p>
-        <p>Has enviado <span id="conteo_mensajes"></span> mensaje<span id="mensaje_plural"></span> al chat.</p>
+        <h2>Bienvenido(a), <span id="username">Usuario</span></h2>
 
-        <hr>
+        <div class="error" id="errorMessage"></div>
+        <div class="success" id="successMessage"></div>
 
-        <div class="form-group">
-            <label for="estado_emocional">¿Cómo te sientes hoy?</label>
-            <form id="estado-form">
-                <i class="fas fa-heart"></i>
-                <select id="estado_emocional" name="estado_emocional" required>
-                    <option value="" disabled selected>Selecciona tu estado</option>
-                    <option value="Feliz">Feliz</option>
-                    <option value="Triste">Triste</option>
-                    <option value="Estresado">Estresado</option>
-                    <option value="Ansioso">Ansioso</option>
-                    <option value="Cansado">Cansado</option>
-                    <option value="Motivado">Motivado</option>
-                </select>
-                <button type="submit" class="button" style="margin-top: 10px;">Registrar Estado</button>
-            </form>
+        <div class="dashboard-header">
+            <p>Tu grado: <span id="grade">No especificado</span></p>
         </div>
 
-        <hr>
+        <div class="dashboard-actions">
+            <button class="action-button" onclick="window.location.href='chat.html'"><i class="fas fa-comment-dots"></i> Ir al Chat</button>
+            <button class="action-button logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
 
-        <div class="action-buttons">
-            <a href="chat.html" class="button">Ir al Chat con el Psicólogo Virtual</a>
-            <a href="edit_profile.html" class="button">Editar Perfil</a>
-            <form id="logout-form">
-                <button type="submit" class="button">Cerrar Sesión</button>
-            </form>
+        <div class="dashboard-section">
+            <h3>Historial Reciente</h3>
+            <div class="message-history" id="messageHistory"></div>
+        </div>
+
+        <div class="footer">
+            &copy; 2025 Psicólogo Virtual - Todos los derechos reservados. Recuerda, este es un soporte virtual; busca ayuda profesional si es necesario.
         </div>
     </div>
 
     <script>
-        // Establecer datos dinámicos
-        document.getElementById('saludo').textContent = `${saludo}, ${username}!`;
-        document.getElementById('grade').textContent = grade;
-        document.getElementById('conteo_mensajes').textContent = conteo_mensajes;
-        document.getElementById('mensaje_plural').textContent = conteo_mensajes !== 1 ? 's' : '';
+        // Inicializar Supabase
+        const supabaseUrl = 'https://abc123.supabase.co'; // Reemplaza con tu URL
+        const supabaseKey = 'tu-anon-key'; // Reemplaza con tu anon key
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Manejo del formulario de estado emocional
-        const form = document.querySelector('#estado-form');
-        const errorDiv = document.createElement('p');
-        errorDiv.className = 'error';
-        const successDiv = document.createElement('p');
-        successDiv.className = 'success';
+        // Verificar si el usuario está autenticado
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) {
+                window.location.href = 'login.html';
+            } else {
+                localStorage.setItem('user_id', session.user.id);
+                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
+                loadUserData();
+                loadMessages();
+                setupRealtime();
+            }
+        }).catch(err => {
+            console.error('Error checking session:', err);
+            document.getElementById('errorMessage').textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+            document.getElementById('errorMessage').style.display = 'block';
+            setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+            window.location.href = 'login.html';
+        });
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const estado = form.querySelector('#estado_emocional').value.trim();
-            const messageContainer = document.getElementById('message-container');
-            errorDiv.textContent = '';
-            successDiv.textContent = '';
-            messageContainer.innerHTML = '';
+        // Cargar datos del usuario
+        async function loadUserData() {
+            const errorMessage = document.getElementById('errorMessage');
+            const usernameSpan = document.getElementById('username');
+            const gradeSpan = document.getElementById('grade');
+            const userId = localStorage.getItem('user_id');
 
-            if (!estado) {
-                errorDiv.textContent = 'Por favor, selecciona un estado emocional.';
-                messageContainer.appendChild(errorDiv);
+            try {
+                const { data, error } = await supabase
+                    .from('usuarios')
+                    .select('username, grade')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    usernameSpan.textContent = data.username || localStorage.getItem('username') || 'Usuario';
+                    gradeSpan.textContent = data.grade || 'No especificado';
+                    localStorage.setItem('grade', data.grade || 'No especificado');
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Error al cargar datos del usuario: ' + error.message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+            }
+        }
+
+        // Cargar historial de mensajes
+        async function loadMessages() {
+            const errorMessage = document.getElementById('errorMessage');
+            const messageHistory = document.getElementById('messageHistory');
+            const userId = localStorage.getItem('user_id');
+
+            if (!userId) {
+                errorMessage.textContent = 'No se encontró user_id. Por favor, inicia sesión nuevamente.';
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+                window.location.href = 'login.html';
                 return;
             }
 
-            const emociones = JSON.parse(localStorage.getItem('emociones') || '[]');
-            emociones.push({ user_id: localStorage.getItem('user_id'), estado, timestamp: new Date().toISOString() });
-            localStorage.setItem('emociones', JSON.stringify(emociones));
-            successDiv.textContent = 'Estado emocional registrado correctamente.';
-            messageContainer.appendChild(successDiv);
-            form.reset();
-        });
+            try {
+                const { data: messages, error } = await supabase
+                    .from('mensajes')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('fecha', { ascending: false })
+                    .limit(5); // Mostrar solo los 5 mensajes más recientes
 
-        // Cierre de sesión
-        const logoutForm = document.querySelector('#logout-form');
-        logoutForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('user_id');
-            localStorage.removeItem('username');
-            localStorage.removeItem('grade');
-            window.location.href = 'index.html';
-        });
+                if (error) throw error;
+
+                messageHistory.innerHTML = '';
+                if (messages.length === 0) {
+                    messageHistory.innerHTML = '<p>No hay mensajes recientes.</p>';
+                    return;
+                }
+
+                messages.forEach(msg => {
+                    const userMessage = document.createElement('div');
+                    userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
+                    userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${new Date(msg.fecha).toLocaleString('es-ES')}</div>`;
+                    messageHistory.appendChild(userMessage);
+
+                    if (msg.respuesta_ia) {
+                        const iaMessage = document.createElement('div');
+                        iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
+                        iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta_ia}<div class="timestamp">${new Date(msg.fecha).toLocaleString('es-ES')}</div>`;
+                        messageHistory.appendChild(iaMessage);
+                    }
+                });
+            } catch (error) {
+                errorMessage.textContent = 'Error al cargar mensajes: ' + error.message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+            }
+        }
+
+        // Configurar suscripción en tiempo real
+        function setupRealtime() {
+            const userId = localStorage.getItem('user_id');
+            supabase
+                .channel('mensajes')
+                .on('postgres_changes', { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'mensajes', 
+                    filter: `user_id=eq.${userId}`
+                }, () => loadMessages())
+                .subscribe();
+        }
+
+        // Cerrar sesión
+        async function logout() {
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+
+                localStorage.removeItem('user_id');
+                localStorage.removeItem('username');
+                localStorage.removeItem('grade');
+
+                successMessage.textContent = 'Sesión cerrada correctamente.';
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                    window.location.href = 'login.html';
+                }, 2000);
+            } catch (error) {
+                errorMessage.textContent = 'Error al cerrar sesión: ' + error.message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+            }
+        }
     </script>
 </body>
 </html>

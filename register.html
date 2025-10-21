@@ -40,7 +40,7 @@
             line-height: 1.6;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             padding: 15px;
         }
 
@@ -51,7 +51,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             z-index: -1;
         }
 
@@ -60,9 +60,10 @@
             backdrop-filter: blur(10px);
             max-width: 450px;
             width: 100%;
+            margin: auto;
             padding: 25px;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
             animation: fadeInUp 0.5s ease-in-out;
             text-align: center;
             display: flex;
@@ -122,20 +123,22 @@
             color: #dc2626;
             font-size: 12px;
             background: #fee2e2;
-            padding: 6px;
+            padding: 8px;
             border-radius: 6px;
             margin-bottom: 12px;
             display: none;
+            animation: fadeInError 0.3s ease-in;
         }
 
         .success {
             color: #15803d;
             font-size: 12px;
             background: #dcfce7;
-            padding: 6px;
+            padding: 8px;
             border-radius: 6px;
             margin-bottom: 12px;
             display: none;
+            animation: fadeInError 0.3s ease-in;
         }
 
         @keyframes fadeInError {
@@ -163,6 +166,7 @@
             border-radius: 8px;
             font-size: 13px;
             transition: border-color 0.3s, box-shadow 0.3s;
+            background: var(--white);
         }
 
         input:focus,
@@ -219,10 +223,14 @@
             font-size: 14px;
             font-weight: 600;
             text-decoration: none;
-            transition: none;
+            transition: background 0.3s ease;
             cursor: pointer;
             width: 100%;
             text-align: center;
+        }
+
+        .button:hover {
+            background: var(--primary-dark);
         }
 
         .login-link {
@@ -359,7 +367,7 @@
         }
 
         @media (hover: none) {
-            .back-button, .button {
+            .back-button, .button, .login-link a {
                 transform: none !important;
                 transition: none !important;
             }

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Regístrate en Psicólogo Virtual: Tu compañero de bienestar emocional.">
+    <meta name="keywords" content="psicólogo virtual, registro, bienestar emocional, inteligencia artificial">
     <title>Registro - Psicólogo Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -31,17 +33,14 @@
         }
 
         html, body {
-            overflow-x: hidden;
-            width: 100%;
             min-height: 100vh;
             font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat scroll;
+            background: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
             color: var(--gray-800);
             line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
         }
 
         body::before {
@@ -59,17 +58,13 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             max-width: 450px;
-            width: 100%;
-            margin: auto;
-            padding: 25px;
+            width: 90%;
+            padding: 1.5rem;
             border-radius: 16px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
             animation: fadeInUp 0.5s ease-in-out;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 1;
+            margin: 1rem;
         }
 
         @keyframes fadeInUp {
@@ -97,48 +92,55 @@
             background: var(--primary-dark);
         }
 
+        .back-button:focus {
+            outline: 3px solid var(--primary-dark);
+            outline-offset: 2px;
+        }
+
         .back-button i {
             font-size: 14px;
         }
 
         .logo {
-            margin-bottom: 12px;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
         }
 
         .logo img {
             width: 90px;
             height: auto;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-            transition: none;
         }
 
         h2 {
             font-size: 1.6rem;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 1rem;
         }
 
         .error {
             color: #dc2626;
-            font-size: 12px;
+            font-size: 0.8rem;
             background: #fee2e2;
-            padding: 8px;
+            padding: 0.5rem;
             border-radius: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 1rem;
             display: none;
             animation: fadeInError 0.3s ease-in;
+            role: alert;
         }
 
         .success {
-            color: #15803d;
-            font-size: 12px;
+            color: var(--success);
+            font-size: 0.8rem;
             background: #dcfce7;
-            padding: 8px;
+            padding: 0.5rem;
             border-radius: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 1rem;
             display: none;
             animation: fadeInError 0.3s ease-in;
+            role: alert;
         }
 
         @keyframes fadeInError {
@@ -147,9 +149,9 @@
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 1rem;
             background: var(--gray-100);
-            padding: 12px;
+            padding: 0.75rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: left;
@@ -161,10 +163,10 @@
         input[type="password"],
         select {
             width: 100%;
-            padding: 8px 36px 8px 10px;
+            padding: 0.5rem 2.25rem 0.5rem 0.75rem;
             border: 1px solid var(--gray-200);
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 0.9rem;
             transition: border-color 0.3s, box-shadow 0.3s;
             background: var(--white);
         }
@@ -179,18 +181,18 @@
         .form-group label {
             display: block;
             color: var(--gray-800);
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
             font-weight: 500;
         }
 
         .form-group i {
             position: absolute;
-            top: 34px;
-            right: 12px;
+            top: 2.1rem;
+            right: 1.5rem;
             color: var(--gray-600);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.9rem;
             transition: color 0.3s ease;
         }
 
@@ -200,7 +202,7 @@
 
         select {
             appearance: none;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.75rem center;
             background-size: 10px;
         }
 
@@ -208,22 +210,22 @@
             display: none;
             animation: fadeInUp 0.3s ease-in-out;
             background: var(--gray-100);
-            padding: 8px;
+            padding: 0.5rem;
             border-radius: 6px;
-            margin-top: 8px;
+            margin-top: 0.5rem;
         }
 
         .button {
             display: inline-block;
-            padding: 10px 15px;
+            padding: 0.75rem;
             background: var(--gradient-primary);
             color: var(--white);
             border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 0.9rem;
             font-weight: 600;
             text-decoration: none;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease;
             cursor: pointer;
             width: 100%;
             text-align: center;
@@ -231,11 +233,17 @@
 
         .button:hover {
             background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .button:focus {
+            outline: 3px solid var(--primary-dark);
+            outline-offset: 2px;
         }
 
         .login-link {
-            margin-top: 12px;
-            font-size: 12px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
             color: var(--gray-600);
         }
 
@@ -251,15 +259,16 @@
             text-decoration: underline;
         }
 
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
+        .login-link a:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
 
+        @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 1.25rem;
                 width: 95%;
-                border-radius: 12px;
+                margin: 0.5rem;
             }
 
             .logo img {
@@ -268,7 +277,7 @@
 
             h2 {
                 font-size: 1.4rem;
-                margin-bottom: 10px;
+                margin-bottom: 0.75rem;
             }
 
             .back-button {
@@ -283,53 +292,58 @@
             }
 
             .form-group {
-                margin-bottom: 10px;
-                padding: 10px;
+                margin-bottom: 0.75rem;
+                padding: 0.65rem;
             }
 
             .form-group label {
-                font-size: 11px;
+                font-size: 0.75rem;
             }
 
             input[type="text"],
             input[type="email"],
             input[type="password"],
             select {
-                font-size: 12px;
-                padding: 7px 34px 7px 10px;
+                font-size: 0.85rem;
+                padding: 0.5rem 2rem 0.5rem 0.65rem;
                 border-radius: 6px;
             }
 
             .form-group i {
-                top: 32px;
-                right: 10px;
-                font-size: 13px;
+                top: 2rem;
+                right: 1.25rem;
+                font-size: 0.85rem;
             }
 
             select {
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 8px center;
+                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"><path fill="%234b5563" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.65rem center;
                 background-size: 8px;
             }
 
             #other_grade_group {
-                padding: 6px;
-                margin-top: 6px;
+                padding: 0.5rem;
+                margin-top: 0.5rem;
             }
 
             .button {
-                font-size: 13px;
-                padding: 8px;
+                font-size: 0.85rem;
+                padding: 0.65rem;
             }
 
             .login-link {
-                font-size: 11px;
+                font-size: 0.8rem;
+            }
+
+            .error,
+            .success {
+                font-size: 0.75rem;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 15px;
-                margin: 10px;
+                padding: 1rem;
+                margin: 0.5rem;
             }
 
             h2 {
@@ -340,66 +354,65 @@
             input[type="email"],
             input[type="password"],
             select {
-                font-size: 11px;
-                padding: 6px 32px 6px 8px;
+                font-size: 0.8rem;
+                padding: 0.4rem 1.75rem 0.4rem 0.5rem;
             }
 
             .form-group i {
-                top: 30px;
-                right: 8px;
-                font-size: 12px;
+                top: 1.9rem;
+                right: 1rem;
+                font-size: 0.8rem;
             }
 
             .button {
-                font-size: 12px;
-                padding: 7px;
+                font-size: 0.8rem;
+                padding: 0.5rem;
             }
 
             .error,
             .success {
-                font-size: 11px;
-                padding: 5px;
+                font-size: 0.7rem;
+                padding: 0.4rem;
             }
 
             .login-link {
-                font-size: 10px;
+                font-size: 0.75rem;
             }
         }
 
         @media (hover: none) {
             .back-button, .button, .login-link a {
                 transform: none !important;
-                transition: none !important;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="index.html" class="back-button" title="Volver al inicio">
-            <i class="fas fa-arrow-left"></i>
+        <a href="index.html" class="back-button" title="Volver al inicio" aria-label="Volver a la página principal">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
         </a>
         <div class="logo">
-            <img src="logo.jpeg" alt="Psicólogo Virtual Logo">
+            <img src="https://via.placeholder.com/100x100?text=Psicólogo+Virtual" alt="Psicólogo Virtual Logo">
         </div>
         <h2>Crear Cuenta</h2>
 
-        <div id="message-container"></div>
+        <div id="message-container" aria-live="polite"></div>
 
-        <form id="register-form">
+        <form id="register-form" aria-describedby="message-container">
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
-                <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
-                <i class="fas fa-user"></i>
+                <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required aria-label="Nombre de usuario">
+                <i class="fas fa-user" aria-hidden="true"></i>
             </div>
             <div class="form-group">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required>
-                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required aria-label="Correo electrónico">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
             </div>
             <div class="form-group">
                 <label for="grade">Grado Escolar</label>
-                <select id="grade" name="grade" required>
+                <select id="grade" name="grade" required aria-label="Grado escolar">
                     <option value="">Selecciona tu grado</option>
                     <option value="1ro de Secundaria">1ro de Secundaria</option>
                     <option value="2do de Secundaria">2do de Secundaria</option>
@@ -408,187 +421,246 @@
                     <option value="5to de Secundaria">5to de Secundaria</option>
                     <option value="Otro">Otro</option>
                 </select>
-                <i class="fas fa-graduation-cap"></i>
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
             </div>
             <div class="form-group" id="other_grade_group">
                 <label for="other_grade">Especifica tu Grado</label>
-                <input type="text" id="other_grade" name="other_grade" placeholder="Ej: Preparatoria, Universidad" maxlength="50">
-                <i class="fas fa-graduation-cap"></i>
+                <input type="text" id="other_grade" name="other_grade" placeholder="Ej: Preparatoria, Universidad" maxlength="50" aria-label="Especificar grado escolar">
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-                <i class="fas fa-eye toggle-password" data-target="password"></i>
+                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required aria-label="Contraseña">
+                <i class="fas fa-eye toggle-password" data-target="password" aria-hidden="true"></i>
             </div>
             <div class="form-group">
                 <label for="confirm_password">Confirmar Contraseña</label>
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirma tu contraseña" required>
-                <i class="fas fa-eye toggle-password" data-target="confirm_password"></i>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirma tu contraseña" required aria-label="Confirmar contraseña">
+                <i class="fas fa-eye toggle-password" data-target="confirm_password" aria-hidden="true"></i>
             </div>
-            <button type="submit" class="button">Registrarse</button>
+            <button type="submit" class="button" aria-label="Registrarse en Psicólogo Virtual">Registrarse</button>
         </form>
 
         <div class="login-link">
-            <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+            <p>¿Ya tienes cuenta? <a href="login.php" aria-label="Iniciar sesión en Psicólogo Virtual">Inicia sesión aquí</a></p>
         </div>
     </div>
 
     <script>
+        console.log('register.html loaded'); // Debug: Confirm page load
+
         // Inicializar Supabase
-        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co'; // Reemplaza con tu URL
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U'; // Reemplaza con tu anon key
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        // Verificar si el usuario está autenticado
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = 'dashboard.html';
-            }
-        }).catch(err => {
-            console.error('Error checking session:', err);
-        });
-
-        // Alternar visibilidad de las contraseñas
-        const toggleButtons = document.querySelectorAll('.toggle-password');
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
-        });
-
-        // Mostrar/ocultar campo de "Otro" grado
-        const gradeSelect = document.getElementById('grade');
-        const otherGradeGroup = document.getElementById('other_grade_group');
-        const otherGradeInput = document.getElementById('other_grade');
-
-        gradeSelect.addEventListener('change', function () {
-            if (this.value === 'Otro') {
-                otherGradeGroup.style.display = 'block';
-                otherGradeInput.setAttribute('required', 'required');
-            } else {
-                otherGradeGroup.style.display = 'none';
-                otherGradeInput.removeAttribute('required');
-                otherGradeInput.value = '';
-            }
-        });
-
-        // Inicializar visibilidad del campo "Otro"
-        if (gradeSelect.value !== 'Otro') {
-            otherGradeGroup.style.display = 'none';
+        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
+        let supabase;
+        try {
+            supabase = supabase.createClient(supabaseUrl, supabaseKey);
+            console.log('Supabase initialized successfully');
+        } catch (err) {
+            console.error('Failed to initialize Supabase:', err.message);
+            console.log('Proceeding without Supabase session check');
         }
 
-        // Prevenir zoom no deseado al enfocar inputs en móviles
-        const inputs = document.querySelectorAll('input, select');
-        inputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                document.body.style.overflow = 'hidden';
-            });
-            input.addEventListener('blur', () => {
-                document.body.style.overflow = '';
-            });
-        });
-
-        // Manejo del formulario de registro
-        const form = document.getElementById('register-form');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const grade = gradeSelect.value;
-            const otherGrade = otherGradeInput.value.trim();
-            const password = document.getElementById('password').value.trim();
-            const confirmPassword = document.getElementById('confirm_password').value.trim();
-            const messageContainer = document.getElementById('message-container');
-
-            const errorDiv = document.createElement('p');
-            errorDiv.className = 'error';
-            const successDiv = document.createElement('p');
-            successDiv.className = 'success';
-            errorDiv.style.display = 'none';
-            successDiv.style.display = 'none';
-            messageContainer.innerHTML = '';
-
-            // Validaciones
-            if (!username || !email || !grade || !password || !confirmPassword) {
-                errorDiv.textContent = 'Por favor, completa todos los campos.';
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-            if (password.length < 8) {
-                errorDiv.textContent = 'La contraseña debe tener al menos 8 caracteres.';
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-            if (password !== confirmPassword) {
-                errorDiv.textContent = 'Las contraseñas no coinciden.';
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-            if (grade === 'Otro' && !otherGrade) {
-                errorDiv.textContent = "Por favor, especifica tu grado en el campo 'Otro'.";
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
+        window.addEventListener('load', () => {
+            console.log('Window loaded, checking Supabase session');
+            if (supabase) {
+                setTimeout(() => {
+                    try {
+                        supabase.auth.getSession().then(({ data: { session } }) => {
+                            console.log('Supabase session check completed');
+                            if (session) {
+                                console.log('Active session found, redirecting to dashboard.php');
+                                window.location.href = 'dashboard.php';
+                            } else {
+                                console.log('No active session, staying on register.html');
+                            }
+                        }).catch(err => {
+                            console.error('Error checking session:', err.message);
+                            console.log('Proceeding without redirect');
+                        });
+                    } catch (err) {
+                        console.error('Unexpected error during session check:', err.message);
+                        console.log('Proceeding without redirect');
+                    }
+                }, 1000); // Delay to ensure rendering
+            } else {
+                console.log('Supabase not initialized, skipping session check');
             }
 
-            // Registro en Supabase
-            try {
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password
+            // Alternar visibilidad de las contraseñas
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                    console.log(`Toggled password visibility for ${targetId}`);
                 });
+            });
 
-                if (error) throw error;
+            // Mostrar/ocultar campo de "Otro" grado
+            const gradeSelect = document.getElementById('grade');
+            const otherGradeGroup = document.getElementById('other_grade_group');
+            const otherGradeInput = document.getElementById('other_grade');
 
-                const userId = data.user.id;
-                const finalGrade = grade === 'Otro' ? otherGrade : grade;
+            gradeSelect.addEventListener('change', function () {
+                if (this.value === 'Otro') {
+                    otherGradeGroup.style.display = 'block';
+                    otherGradeInput.setAttribute('required', 'required');
+                    console.log('Showing other grade input');
+                } else {
+                    otherGradeGroup.style.display = 'none';
+                    otherGradeInput.removeAttribute('required');
+                    otherGradeInput.value = '';
+                    console.log('Hiding other grade input');
+                }
+            });
 
-                // Insertar datos en la tabla usuarios
-                const { error: dbError } = await supabase
-                    .from('usuarios')
-                    .insert({
-                        id: userId,
+            // Inicializar visibilidad del campo "Otro"
+            if (gradeSelect.value !== 'Otro') {
+                otherGradeGroup.style.display = 'none';
+            }
+
+            // Prevenir zoom no deseado al enfocar inputs en móviles
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    document.body.style.overflow = 'hidden';
+                    console.log(`Input focused: ${input.id}`);
+                });
+                input.addEventListener('blur', () => {
+                    document.body.style.overflow = '';
+                    console.log(`Input blurred: ${input.id}`);
+                });
+            });
+
+            // Manejo del formulario de registro
+            const form = document.getElementById('register-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('Form submitted');
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const grade = gradeSelect.value;
+                const otherGrade = otherGradeInput.value.trim();
+                const password = document.getElementById('password').value.trim();
+                const confirmPassword = document.getElementById('confirm_password').value.trim();
+                const messageContainer = document.getElementById('message-container');
+
+                const errorDiv = document.createElement('p');
+                errorDiv.className = 'error';
+                const successDiv = document.createElement('p');
+                successDiv.className = 'success';
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+                messageContainer.innerHTML = '';
+
+                // Validaciones
+                if (!username || !email || !grade || !password || !confirmPassword) {
+                    errorDiv.textContent = 'Por favor, completa todos los campos.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Missing fields');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9]{3,20}$/.test(username)) {
+                    errorDiv.textContent = 'El nombre de usuario debe tener entre 3 y 20 caracteres alfanuméricos.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Invalid username');
+                    return;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Invalid email');
+                    return;
+                }
+                if (password.length < 8) {
+                    errorDiv.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Password too short');
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    errorDiv.textContent = 'Las contraseñas no coinciden.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Passwords do not match');
+                    return;
+                }
+                if (grade === 'Otro' && !otherGrade) {
+                    errorDiv.textContent = "Por favor, especifica tu grado en el campo 'Otro'.";
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Missing other grade');
+                    return;
+                }
+
+                if (!supabase) {
+                    errorDiv.textContent = 'Error: No se pudo conectar con el servidor de autenticación.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Supabase not initialized during form submission');
+                    return;
+                }
+
+                // Registro en Supabase
+                console.log('Attempting Supabase signup');
+                try {
+                    const { data, error } = await supabase.auth.signUp({
                         email,
-                        username,
-                        grade: finalGrade
+                        password,
+                        options: {
+                            data: { username }
+                        }
                     });
 
-                if (dbError) throw dbError;
+                    if (error) throw error;
 
-                // Guardar en localStorage para compatibilidad
-                localStorage.setItem('user_id', userId);
-                localStorage.setItem('username', username);
-                localStorage.setItem('grade', finalGrade);
+                    const userId = data.user.id;
+                    const finalGrade = grade === 'Otro' ? otherGrade : grade;
 
-                // Mostrar mensaje de éxito
-                successDiv.textContent = 'Registro exitoso. Redirigiendo al login...';
-                successDiv.style.display = 'block';
-                messageContainer.appendChild(successDiv);
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
-            } catch (error) {
-                errorDiv.textContent = 'Error al registrarse: ' + error.message;
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                setTimeout(() => errorDiv.style.display = 'none', 3000);
-            }
+                    // Insertar datos en la tabla usuarios
+                    console.log('Inserting user data into usuarios table');
+                    const { error: dbError } = await supabase
+                        .from('usuarios')
+                        .insert({
+                            id: userId,
+                            email,
+                            username,
+                            grade: finalGrade
+                        });
+
+                    if (dbError) throw dbError;
+
+                    // Guardar en localStorage para compatibilidad
+                    localStorage.setItem('user_id', userId);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('grade', finalGrade);
+
+                    // Mostrar mensaje de éxito
+                    successDiv.textContent = 'Registro exitoso. Redirigiendo al login...';
+                    successDiv.style.display = 'block';
+                    messageContainer.appendChild(successDiv);
+                    console.log('Registration successful, redirecting to login.php');
+                    setTimeout(() => {
+                        window.location.href = 'login.php';
+                    }, 2000);
+                } catch (error) {
+                    errorDiv.textContent = 'Error al registrarse: ' + error.message;
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.error('Registration error:', error.message);
+                    setTimeout(() => errorDiv.style.display = 'none', 3000);
+                }
+            });
         });
     </script>
 </body>
 </html>
-

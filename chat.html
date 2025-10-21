@@ -367,7 +367,7 @@
 
     <div class="loading-bar" id="loadingBar"></div>
     <div class="container">
-        <a href="index.html" class="back-button" title="Volver al inicio">
+        <a href="dashboard.html" class="back-button" title="Volver al dashboard">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div class="logo">
@@ -406,38 +406,37 @@
             }
         }
 
-        // Cargar historial de mensajes desde el backend
-        async function loadMessages() {
+        // Cargar historial de mensajes desde localStorage
+        function loadMessages() {
             const userId = localStorage.getItem('user_id');
             const errorMessage = document.getElementById('errorMessage');
             const chatHistory = document.getElementById('chatHistory');
 
+            if (!userId) {
+                errorMessage.textContent = 'No se encontró user_id. Por favor, inicia sesión nuevamente.';
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+                return;
+            }
+
             try {
-                const response = await fetch('chat.php?action=load_messages', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('user_id')}`
-                    }
-                });
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Error al cargar mensajes');
-                }
-
+                const messages = JSON.parse(localStorage.getItem('mensajes') || '[]');
                 chatHistory.innerHTML = '';
-                data.messages.forEach(msg => {
-                    const userMessage = document.createElement('div');
-                    userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
-                    userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${msg.fecha}</div>`;
-                    chatHistory.appendChild(userMessage);
+                messages
+                    .filter(msg => msg.user_id === userId)
+                    .forEach(msg => {
+                        const userMessage = document.createElement('div');
+                        userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
+                        userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${msg.fecha}</div>`;
+                        chatHistory.appendChild(userMessage);
 
-                    if (msg.respuesta_ia) {
-                        const iaMessage = document.createElement('div');
-                        iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
-                        iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta_ia}<div class="timestamp">${msg.fecha}</div>`;
-                        chatHistory.appendChild(iaMessage);
-                    }
-                });
+                        if (msg.respuesta_ia) {
+                            const iaMessage = document.createElement('div');
+                            iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
+                            iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta_ia}<div class="timestamp">${msg.fecha}</div>`;
+                            chatHistory.appendChild(iaMessage);
+                        }
+                    });
                 scrollToBottom();
             } catch (error) {
                 errorMessage.textContent = 'Error al cargar mensajes: ' + error.message;
@@ -446,7 +445,33 @@
             }
         }
 
-        // Enviar mensaje al backend
+        // Simular respuesta de IA basada en palabras clave
+        function getIAResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            let respuesta = 'Gracias por compartir. ¿Puedes darme más detalles para ayudarte mejor?';
+            let nivel_alerta = 'verde';
+
+            if (lowerMessage.includes('estrés')) {
+                respuesta = 'Para manejar el estrés, prueba técnicas de respiración profunda: inhala por 4 segundos, mantén por 4 segundos y exhala por 4 segundos. También puedes intentar meditación guiada o un paseo al aire libre.';
+                nivel_alerta = 'anaranjado';
+            } else if (lowerMessage.includes('ansiedad')) {
+                respuesta = 'La ansiedad puede ser desafiante. Intenta escribir lo que sientes en un diario para identificar desencadenantes. También, practicar mindfulness o hablar con un amigo puede ayudar.';
+                nivel_alerta = 'anaranjado';
+            } else if (lowerMessage.includes('sueño')) {
+                respuesta = 'Para mejorar el sueño, establece una rutina nocturna: evita pantallas 1 hora antes de dormir, mantén un horario regular y crea un ambiente relajante.';
+                nivel_alerta = 'verde';
+            } else if (lowerMessage.includes('tristeza')) {
+                respuesta = 'Lamento que te sientas así. Hablar con alguien de confianza o realizar actividades que disfrutes, como escuchar música o pintar, puede ayudarte a procesar la tristeza.';
+                nivel_alerta = 'rojo';
+            } else if (lowerMessage.includes('relajación')) {
+                respuesta = 'Un ejercicio de relajación simple es la técnica 4-7-8: inhala por 4 segundos, mantén por 7 segundos y exhala por 8 segundos. Repite varias veces.';
+                nivel_alerta = 'verde';
+            }
+
+            return { respuesta, nivel_alerta };
+        }
+
+        // Enviar mensaje y guardar en localStorage
         async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
@@ -463,34 +488,48 @@
                 return;
             }
 
+            if (!userId) {
+                errorMessage.textContent = 'No se encontró user_id. Por favor, inicia sesión nuevamente.';
+                errorMessage.style.display = 'block';
+                setTimeout(() => errorMessage.style.display = 'none', 3000);
+                return;
+            }
+
             loadingBar.style.display = 'block';
 
             try {
-                const response = await fetch('chat.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userId}`
-                    },
-                    body: JSON.stringify({ action: 'send_message', mensaje: message, user_id: userId })
+                const { respuesta, nivel_alerta } = getIAResponse(message);
+                const fecha = new Date().toLocaleString('es-ES', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
                 });
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.error || 'Error al procesar el mensaje');
-                }
 
-                const { mensaje, respuesta, nivel_alerta, fecha } = data;
-
-                // Mostrar mensaje en el historial
+                // Mostrar mensaje del usuario
                 const userMessage = document.createElement('div');
                 userMessage.className = `message user-message alert-${nivel_alerta}`;
-                userMessage.innerHTML = `<strong>Tú:</strong> ${mensaje}<div class="timestamp">${fecha}</div>`;
+                userMessage.innerHTML = `<strong>Tú:</strong> ${message}<div class="timestamp">${fecha}</div>`;
                 chatHistory.appendChild(userMessage);
 
+                // Mostrar respuesta de IA
                 const iaMessage = document.createElement('div');
                 iaMessage.className = `message ia-message alert-${nivel_alerta}`;
                 iaMessage.innerHTML = `<strong>IA:</strong> ${respuesta}<div class="timestamp">${fecha}</div>`;
                 chatHistory.appendChild(iaMessage);
+
+                // Guardar mensaje en localStorage
+                const messages = JSON.parse(localStorage.getItem('mensajes') || '[]');
+                messages.push({
+                    user_id: userId,
+                    mensaje: message,
+                    respuesta_ia: respuesta,
+                    nivel_alerta: nivel_alerta,
+                    fecha: fecha
+                });
+                localStorage.setItem('mensajes', JSON.stringify(messages));
 
                 successMessage.textContent = 'Mensaje enviado.';
                 successMessage.style.display = 'block';
@@ -501,7 +540,7 @@
                 scrollToBottom();
             } catch (error) {
                 loadingBar.style.display = 'none';
-                errorMessage.textContent = 'Error al enviar el mensaje: ' + error.message;
+                errorMessage.textContent = 'Error al procesar el mensaje: ' + error.message;
                 errorMessage.style.display = 'block';
                 setTimeout(() => errorMessage.style.display = 'none', 3000);
             }

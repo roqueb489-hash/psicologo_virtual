@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Psicólogo Virtual: Tu compañero de bienestar emocional impulsado por inteligencia artificial.">
+    <meta name="keywords" content="psicólogo virtual, bienestar emocional, inteligencia artificial, salud mental">
     <title>Psicólogo Virtual - Tu Compañero de Bienestar Emocional</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -41,6 +44,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
 
         .navbar {
@@ -99,6 +113,11 @@
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
         }
 
+        .nav-btn:focus {
+            outline: 3px solid var(--primary-dark);
+            outline-offset: 2px;
+        }
+
         .hero {
             min-height: 80vh;
             width: 100%;
@@ -132,6 +151,7 @@
         }
 
         .hero h1 {
+            font-size: 2.8rem;
             font-size: clamp(2.8rem, 6vw, 4.8rem);
             font-weight: 600;
             color: var(--white);
@@ -173,6 +193,11 @@
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
         }
 
+        .cta-primary:focus {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+        }
+
         .cta-secondary {
             padding: 1rem 2.2rem;
             background: transparent;
@@ -188,6 +213,11 @@
         .cta-secondary:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: scale(1.1);
+        }
+
+        .cta-secondary:focus {
+            outline: 3px solid var(--white);
+            outline-offset: 2px;
         }
 
         .container {
@@ -279,6 +309,11 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
+        .feature-card:focus-within {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         .feature-icon {
             width: 60px;
             height: 60px;
@@ -361,6 +396,11 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
+        .process-step:focus-within {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
+
         .step-number {
             width: 50px;
             height: 50px;
@@ -408,6 +448,11 @@
 
         .stat-item:hover {
             transform: translateY(-8px);
+        }
+
+        .stat-item:focus-within {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
         }
 
         .stat-number {
@@ -460,6 +505,11 @@
 
         .footer-section a:hover {
             color: var(--accent);
+        }
+
+        .footer-section a:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
         }
 
         .footer-bottom {
@@ -575,36 +625,183 @@
     </style>
 </head>
 <body>
-    <script>
-        // Inicializar Supabase
-        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co'; // Reemplaza con tu URL
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U'; // Reemplaza con tu anon key
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-links">
+            <a href="login.php" class="nav-btn" aria-label="Iniciar sesión en Psicólogo Virtual"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Iniciar Sesión</a>
+            <a href="register.php" class="nav-btn" aria-label="Registrarse en Psicólogo Virtual"><i class="fas fa-user-plus" aria-hidden="true"></i> Registrarse</a>
+        </div>
+    </nav>
 
-        // Verificar autenticación
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                localStorage.setItem('user_id', session.user.id);
-                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
-                supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
-                    if (!error && data) {
-                        localStorage.setItem('grade', data.grade || 'No especificado');
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-content">
+            <h1 id="hero-title">Psicólogo Virtual</h1>
+            <p>Tu compañero de <strong>bienestar emocional</strong> impulsado por inteligencia artificial súper cool.</p>
+            <div class="hero-buttons">
+                <a href="register.php" class="cta-primary" aria-label="Empieza gratis con Psicólogo Virtual"><i class="fas fa-rocket" aria-hidden="true"></i> ¡Empieza Gratis!</a>
+                <a href="#cómo-funciona" class="cta-secondary" aria-label="Mira cómo funciona Psicólogo Virtual"><i class="fas fa-play" aria-hidden="true"></i> Mira Cómo Funciona</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Features Section -->
+        <section class="section features-section animate-on-scroll" aria-labelledby="features-title">
+            <div class="section-title">
+                <h2 id="features-title">Transforma Tu Bienestar</h2>
+                <p>Funcionalidades diseñadas para apoyarte en cada paso de tu viaje emocional</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" tabindex="0">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie" aria-hidden="true"></i>
+                    </div>
+                    <h3>Monitoreo Emocional</h3>
+                    <p>Evalúa tus emociones en tiempo real con alertas codificadas por colores para un apoyo proactivo.</p>
+                </div>
+                <div class="feature-card" tabindex="0">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open" aria-hidden="true"></i>
+                    </div>
+                    <h3>Historial Completo</h3>
+                    <p>Accede a tus conversaciones, rastrea tu progreso y descubre patrones para crecer.</p>
+                </div>
+                <div class="feature-card" tabindex="0">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                    </div>
+                    <h3>Privacidad Absoluta</h3>
+                    <p>Tus datos están protegidos con encriptación de nivel militar para máxima confidencialidad.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Process Section -->
+        <section class="section ai-process animate-on-scroll" id="cómo-funciona" aria-labelledby="ai-process-title">
+            <div class="section-title">
+                <h2 id="ai-process-title">Inteligencia Artificial Avanzada</h2>
+                <p>Descubre cómo nuestra tecnología cuida tu bienestar emocional</p>
+            </div>
+            <div class="process-steps">
+                <div class="process-step" tabindex="0">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-comment-dots" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;" aria-hidden="true"></i>
+                    <h3>Conversación Natural</h3>
+                    <p>Habla con libertad, nuestra IA comprende emociones, contexto y matices.</p>
+                </div>
+                <div class="process-step" tabindex="0">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-brain" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;" aria-hidden="true"></i>
+                    <h3>Análisis Emocional</h3>
+                    <p>Evaluamos tu estado emocional en tiempo real con alertas inteligentes.</p>
+                </div>
+                <div class="process-step" tabindex="0">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-heartbeat" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;" aria-hidden="true"></i>
+                    <h3>Respuesta Personalizada</h3>
+                    <p>Recibe consejos empáticos adaptados a tus necesidades únicas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="section stats animate-on-scroll" aria-labelledby="stats-title">
+            <h2 id="stats-title" class="visually-hidden">Estadísticas de Psicólogo Virtual</h2>
+            <div class="stat-item" tabindex="0">
+                <span class="stat-number">24/7</span>
+                <div class="stat-label">Disponibilidad</div>
+            </div>
+            <div class="stat-item" tabindex="0">
+                <span class="stat-number">+97%</span>
+                <div class="stat-label">Precisión Emocional</div>
+            </div>
+            <div class="stat-item" tabindex="0">
+                <span class="stat-number">100%</span>
+                <div class="stat-label">Confidencial</div>
+            </div>
+            <div class="stat-item" tabindex="0">
+                <span class="stat-number">0₿</span>
+                <div class="stat-label">Costo Inicial</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-brain" aria-hidden="true"></i> Psicólogo Virtual</h3>
+                <p>Tu compañero de bienestar emocional, siempre listo para ayudarte.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <p><a href="login.php" aria-label="Iniciar sesión">Iniciar Sesión</a></p>
+                <p><a href="register.php" aria-label="Registrarse">Registrarse</a></p>
+                <p><a href="#cómo-funciona" aria-label="Cómo funciona Psicólogo Virtual">Cómo Funciona</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Soporte</h3>
+                <p><a href="mailto:support@psicologovirtual.com" aria-label="Correo de soporte">support@psicologovirtual.com</a></p>
+                <p><a href="privacy-policy.php" aria-label="Política de privacidad">Política de Privacidad</a></p>
+                <p><a href="terms-of-service.php" aria-label="Términos de servicio">Términos de Servicio</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Psicólogo Virtual. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        console.log('index.html loaded'); // Debug: Confirm page load
+
+        // Inicializar Supabase
+        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Delay Supabase check to ensure rendering
+        window.addEventListener('load', () => {
+            console.log('Checking Supabase session'); // Debug: Confirm Supabase check
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session) {
+                    if (typeof localStorage !== 'undefined') {
+                        localStorage.setItem('user_id', session.user.id);
+                        localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
+                        supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
+                            if (!error && data) {
+                                localStorage.setItem('grade', data.grade || 'No especificado');
+                                window.location.href = 'dashboard.php';
+                            } else {
+                                console.error('Error fetching user grade:', error);
+                                window.location.href = 'login.php';
+                            }
+                        });
+                    } else {
+                        console.error('localStorage no está disponible.');
+                        window.location.href = 'login.php';
                     }
-                    window.location.href = 'dashboard.html';
-                });
-            }
-        }).catch(err => {
-            console.error('Error checking session:', err);
+                } else {
+                    console.log('No active session, please log in.');
+                }
+            }).catch(err => {
+                console.error('Error checking session:', err);
+                window.location.href = 'login.php';
+            });
         });
 
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
 
@@ -636,136 +833,6 @@
                 navbar.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
             }
         });
-
-        // Hover effects
-        document.querySelectorAll('.nav-btn, .cta-primary, .cta-secondary').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                el.style.transform = 'scale(1.1)';
-            });
-            el.addEventListener('mouseleave', () => {
-                el.style.transform = 'scale(1)';
-            });
-        });
-
-        document.querySelectorAll('.feature-card, .process-step, .stat-item').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                el.style.transform = 'translateY(-8px)';
-            });
-            el.addEventListener('mouseleave', () => {
-                el.style.transform = 'translateY(0)';
-            });
-        });
     </script>
-
-    <nav class="navbar">
-        <div class="nav-links">
-            <a href="login.html" class="nav-btn"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
-            <a href="register.html" class="nav-btn"><i class="fas fa-user-plus"></i> Registrarse</a>
-        </div>
-    </nav>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Psicólogo Virtual</h1>
-            <p>Tu compañero de <strong>bienestar emocional</strong> impulsado por inteligencia artificial súper cool.</p>
-            <div class="hero-buttons">
-                <a href="register.html" class="cta-primary"><i class="fas fa-rocket"></i> ¡Empieza Gratis!</a>
-                <a href="#cómo-funciona" class="cta-secondary"><i class="fas fa-play"></i> Mira Cómo Funciona</a>
-            </div>
-        </div>
-    </section>
-
-    <div class="container">
-        <section class="section features-section animate-on-scroll">
-            <div class="section-title">
-                <h2>Transforma Tu Bienestar</h2>
-                <p>Funcionalidades diseñadas para apoyarte en cada paso de tu viaje emocional</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
-                    <h3>Monitoreo Emocional</h3>
-                    <p>Evalúa tus emociones en tiempo real con alertas codificadas por colores.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-book-open"></i></div>
-                    <h3>Historial Completo</h3>
-                    <p>Accede a tus conversaciones, rastrea tu progreso y descubre patrones.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
-                    <h3>Privacidad Absoluta</h3>
-                    <p>Tus datos están protegidos con encriptación de nivel militar.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section ai-process animate-on-scroll" id="cómo-funciona">
-            <div class="section-title">
-                <h2>Inteligencia Artificial Avanzada</h2>
-                <p>Descubre cómo nuestra tecnología cuida tu bienestar emocional</p>
-            </div>
-            <div class="process-steps">
-                <div class="process-step">
-                    <div class="step-number">1</div>
-                    <h3>Conversación Natural</h3>
-                    <p>Habla con libertad, nuestra IA comprende emociones y contexto.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">2</div>
-                    <h3>Análisis Emocional</h3>
-                    <p>Evaluamos tu estado emocional en tiempo real con alertas inteligentes.</p>
-                </div>
-                <div class="process-step">
-                    <div class="step-number">3</div>
-                    <h3>Respuesta Personalizada</h3>
-                    <p>Recibe consejos empáticos adaptados a tus necesidades únicas.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section stats animate-on-scroll">
-            <div class="stat-item">
-                <span class="stat-number">24/7</span>
-                <div class="stat-label">Disponibilidad</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">+97%</span>
-                <div class="stat-label">Precisión Emocional</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">100%</span>
-                <div class="stat-label">Confidencial</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">0₿</span>
-                <div class="stat-label">Costo Inicial</div>
-            </div>
-        </section>
-    </div>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3><i class="fas fa-brain"></i> Psicólogo Virtual</h3>
-                <p>Tu compañero de bienestar emocional, siempre listo para ayudarte.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Enlaces Rápidos</h3>
-                <p><a href="login.html">Iniciar Sesión</a></p>
-                <p><a href="register.html">Registrarse</a></p>
-                <p><a href="#cómo-funciona">Cómo Funciona</a></p>
-            </div>
-            <div class="footer-section">
-                <h3>Soporte</h3>
-                <p><a href="mailto:support@psicologovirtual.com">support@psicologovirtual.com</a></p>
-                <p><a href="#">Política de Privacidad</a></p>
-                <p><a href="#">Términos de Servicio</a></p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Psicólogo Virtual. Todos los derechos reservados.</p>
-        </div>
-    </footer>
 </body>
 </html>

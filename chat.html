@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat - Psicólogo Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -29,16 +30,18 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            min-height: 100vh;
             font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: url('https://images.unsplash.com/photo-1516321310764-8d8f6c0c77c0?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+            background: url('https://images.unsplash.com/photo-1516321310764-8d8f6c0c77c0?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat scroll;
             color: var(--gray-800);
             line-height: 1.6;
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 20px;
+            padding: 15px;
         }
 
         body::before {
@@ -57,14 +60,14 @@
             backdrop-filter: blur(10px);
             max-width: 600px;
             width: 100%;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             animation: fadeInUp 0.5s ease-in-out;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             z-index: 1;
         }
 
@@ -75,64 +78,63 @@
 
         .back-button {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 10px;
+            left: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             background: var(--primary);
             color: var(--white);
             border-radius: 50%;
             text-decoration: none;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            transition: background 0.3s ease;
         }
 
         .back-button:hover {
             background: var(--primary-dark);
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
         .back-button i {
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .logo {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .logo img {
-            width: 100px;
+            width: 90px;
             height: auto;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: none;
         }
 
         h2 {
-            font-size: 28px;
+            font-size: 1.6rem;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .error {
             color: #dc2626;
-            font-size: 14px;
+            font-size: 13px;
             background: #fee2e2;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             display: none;
         }
 
         .success {
             color: #15803d;
-            font-size: 14px;
+            font-size: 13px;
             background: #dcfce7;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             display: none;
         }
 
@@ -144,31 +146,27 @@
         .chat-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .chat-history {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
             border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 12px;
             background: var(--gray-100);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             flex-grow: 1;
         }
 
         .message {
-            margin-bottom: 15px;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
             line-height: 1.5;
-            transition: transform 0.3s ease;
-        }
-
-        .message:hover {
-            transform: translateY(-3px);
+            transition: none;
         }
 
         .user-message {
@@ -200,90 +198,77 @@
         }
 
         .timestamp {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray-600);
-            margin-top: 5px;
+            margin-top: 4px;
             text-align: right;
         }
 
         .form-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
 
         .form-group input {
             flex: 1;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border: 1px solid var(--gray-200);
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 13px;
             transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
         }
 
         .form-group button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             background: var(--accent);
             color: var(--white);
             border: none;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-        }
-
-        .form-group button:hover {
-            background: #d97706;
-            transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            transition: none;
         }
 
         .suggestions {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         .suggestion-button {
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: var(--gray-100);
             color: var(--gray-800);
             border: none;
-            border-radius: 10px;
-            font-size: 13px;
+            border-radius: 8px;
+            font-size: 12px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-        }
-
-        .suggestion-button:hover {
-            background: var(--secondary);
-            color: var(--white);
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+            transition: none;
         }
 
         .footer {
-            margin-top: 20px;
-            font-size: 12px;
+            margin-top: 15px;
+            font-size: 11px;
             color: var(--gray-600);
             text-align: center;
-            padding: 10px;
+            padding: 8px;
             background: var(--gray-100);
-            border-radius: 10px;
+            border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .loading-bar {
             width: 100%;
-            height: 4px;
+            height: 3px;
             background: var(--gray-200);
             position: fixed;
             top: 0;
@@ -307,13 +292,14 @@
             100% { width: 100%; }
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             body {
-                padding: 15px;
+                padding: 10px;
             }
 
             .container {
                 padding: 20px;
+                width: 95%;
             }
 
             .logo img {
@@ -321,57 +307,94 @@
             }
 
             h2 {
-                font-size: 24px;
+                font-size: 1.4rem;
             }
 
             .back-button {
-                width: 32px;
-                height: 32px;
+                width: 28px;
+                height: 28px;
+                top: 8px;
+                left: 8px;
             }
 
             .back-button i {
-                font-size: 14px;
-            }
-
-            .form-group button {
-                font-size: 13px;
-                padding: 8px 15px;
+                font-size: 12px;
             }
 
             .chat-history {
                 max-height: 200px;
             }
 
+            .form-group button {
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+
             .suggestions {
-                gap: 5px;
+                gap: 6px;
             }
 
             .suggestion-button {
+                font-size: 11px;
+                padding: 5px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .form-group input {
+                padding: 7px 10px;
                 font-size: 12px;
+            }
+
+            .form-group button {
                 padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .chat-history {
+                max-height: 150px;
+            }
+
+            .message {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .suggestion-button {
+                font-size: 10px;
+                padding: 4px 6px;
             }
 
             .footer {
-                font-size: 11px;
+                font-size: 10px;
+            }
+        }
+
+        @media (hover: none) {
+            .back-button, .form-group button, .suggestion-button, .message {
+                transform: none !important;
+                transition: none !important;
             }
         }
     </style>
 </head>
 <body>
-    <script>
-        // Verificar si el usuario está autenticado
-        if (!localStorage.getItem('user_id')) {
-            window.location.href = 'login.html';
-        }
-    </script>
-
     <div class="loading-bar" id="loadingBar"></div>
     <div class="container">
         <a href="dashboard.html" class="back-button" title="Volver al dashboard">
             <i class="fas fa-arrow-left"></i>
         </a>
         <div class="logo">
-            <img src="images (2).jpeg" alt="Psicólogo Virtual Logo">
+            <img src="logo.jpeg" alt="Psicólogo Virtual Logo">
         </div>
         <h2>Chatea con tu Psicólogo Virtual</h2>
 
@@ -398,6 +421,29 @@
     </div>
 
     <script>
+        // Inicializar Supabase
+        const supabaseUrl = 'https://abc123.supabase.co'; // Reemplaza con tu URL
+        const supabaseKey = 'tu-anon-key'; // Reemplaza con tu anon key
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Verificar si el usuario está autenticado
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) {
+                window.location.href = 'login.html';
+            } else {
+                localStorage.setItem('user_id', session.user.id);
+                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
+                loadMessages();
+                setupRealtime();
+            }
+        }).catch(err => {
+            console.error('Error checking session:', err);
+            document.getElementById('errorMessage').textContent = 'Error de conexión. Por favor, intenta de nuevo.';
+            document.getElementById('errorMessage').style.display = 'block';
+            setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+            window.location.href = 'login.html';
+        });
+
         // Hacer scroll al final del historial de chat
         function scrollToBottom() {
             const chatHistory = document.getElementById('chatHistory');
@@ -406,43 +452,63 @@
             }
         }
 
-        // Cargar historial de mensajes desde localStorage
-        function loadMessages() {
-            const userId = localStorage.getItem('user_id');
+        // Cargar historial de mensajes desde Supabase
+        async function loadMessages() {
             const errorMessage = document.getElementById('errorMessage');
             const chatHistory = document.getElementById('chatHistory');
+            const userId = localStorage.getItem('user_id');
 
             if (!userId) {
                 errorMessage.textContent = 'No se encontró user_id. Por favor, inicia sesión nuevamente.';
                 errorMessage.style.display = 'block';
                 setTimeout(() => errorMessage.style.display = 'none', 3000);
+                window.location.href = 'login.html';
                 return;
             }
 
             try {
-                const messages = JSON.parse(localStorage.getItem('mensajes') || '[]');
-                chatHistory.innerHTML = '';
-                messages
-                    .filter(msg => msg.user_id === userId)
-                    .forEach(msg => {
-                        const userMessage = document.createElement('div');
-                        userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
-                        userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${msg.fecha}</div>`;
-                        chatHistory.appendChild(userMessage);
+                const { data: messages, error } = await supabase
+                    .from('mensajes')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('fecha', { ascending: true });
 
-                        if (msg.respuesta_ia) {
-                            const iaMessage = document.createElement('div');
-                            iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
-                            iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta_ia}<div class="timestamp">${msg.fecha}</div>`;
-                            chatHistory.appendChild(iaMessage);
-                        }
-                    });
+                if (error) throw error;
+
+                chatHistory.innerHTML = '';
+                messages.forEach(msg => {
+                    const userMessage = document.createElement('div');
+                    userMessage.className = `message user-message alert-${msg.nivel_alerta}`;
+                    userMessage.innerHTML = `<strong>Tú:</strong> ${msg.mensaje}<div class="timestamp">${new Date(msg.fecha).toLocaleString('es-ES')}</div>`;
+                    chatHistory.appendChild(userMessage);
+
+                    if (msg.respuesta_ia) {
+                        const iaMessage = document.createElement('div');
+                        iaMessage.className = `message ia-message alert-${msg.nivel_alerta}`;
+                        iaMessage.innerHTML = `<strong>IA:</strong> ${msg.respuesta_ia}<div class="timestamp">${new Date(msg.fecha).toLocaleString('es-ES')}</div>`;
+                        chatHistory.appendChild(iaMessage);
+                    }
+                });
                 scrollToBottom();
             } catch (error) {
                 errorMessage.textContent = 'Error al cargar mensajes: ' + error.message;
                 errorMessage.style.display = 'block';
                 setTimeout(() => errorMessage.style.display = 'none', 3000);
             }
+        }
+
+        // Configurar suscripción en tiempo real
+        function setupRealtime() {
+            const userId = localStorage.getItem('user_id');
+            supabase
+                .channel('mensajes')
+                .on('postgres_changes', { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'mensajes', 
+                    filter: `user_id=eq.${userId}`
+                }, () => loadMessages())
+                .subscribe();
         }
 
         // Simular respuesta de IA basada en palabras clave
@@ -471,7 +537,7 @@
             return { respuesta, nivel_alerta };
         }
 
-        // Enviar mensaje y guardar en localStorage
+        // Enviar mensaje y guardar en Supabase
         async function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
@@ -492,6 +558,7 @@
                 errorMessage.textContent = 'No se encontró user_id. Por favor, inicia sesión nuevamente.';
                 errorMessage.style.display = 'block';
                 setTimeout(() => errorMessage.style.display = 'none', 3000);
+                window.location.href = 'login.html';
                 return;
             }
 
@@ -499,38 +566,20 @@
 
             try {
                 const { respuesta, nivel_alerta } = getIAResponse(message);
-                const fecha = new Date().toLocaleString('es-ES', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
+                const fecha = new Date().toISOString();
 
-                // Mostrar mensaje del usuario
-                const userMessage = document.createElement('div');
-                userMessage.className = `message user-message alert-${nivel_alerta}`;
-                userMessage.innerHTML = `<strong>Tú:</strong> ${message}<div class="timestamp">${fecha}</div>`;
-                chatHistory.appendChild(userMessage);
-
-                // Mostrar respuesta de IA
-                const iaMessage = document.createElement('div');
-                iaMessage.className = `message ia-message alert-${nivel_alerta}`;
-                iaMessage.innerHTML = `<strong>IA:</strong> ${respuesta}<div class="timestamp">${fecha}</div>`;
-                chatHistory.appendChild(iaMessage);
-
-                // Guardar mensaje en localStorage
-                const messages = JSON.parse(localStorage.getItem('mensajes') || '[]');
-                messages.push({
+                // Insertar mensaje en Supabase
+                const { error } = await supabase.from('mensajes').insert({
                     user_id: userId,
                     mensaje: message,
                     respuesta_ia: respuesta,
-                    nivel_alerta: nivel_alerta,
-                    fecha: fecha
+                    nivel_alerta,
+                    fecha
                 });
-                localStorage.setItem('mensajes', JSON.stringify(messages));
 
+                if (error) throw error;
+
+                // Los mensajes se actualizarán automáticamente vía suscripción en tiempo real
                 successMessage.textContent = 'Mensaje enviado.';
                 successMessage.style.display = 'block';
                 setTimeout(() => successMessage.style.display = 'none', 3000);
@@ -558,9 +607,6 @@
                 sendMessage();
             }
         });
-
-        // Cargar mensajes al iniciar
-        window.onload = loadMessages;
     </script>
 </body>
 </html>

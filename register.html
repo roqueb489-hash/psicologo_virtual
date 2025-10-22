@@ -240,15 +240,6 @@
             outline-offset: 2px;
         }
 
-        .observable-embed {
-            width: 100%;
-            height: 300px;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            margin: 1rem 0;
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 1.25rem;
@@ -318,10 +309,6 @@
             .login-link {
                 font-size: 0.8rem;
             }
-
-            .observable-embed {
-                height: 250px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -355,10 +342,6 @@
 
             .login-link {
                 font-size: 0.75rem;
-            }
-
-            .observable-embed {
-                height: 200px;
             }
         }
 
@@ -425,10 +408,6 @@
 
         <div class="login-link">
             <p>¿Ya tienes cuenta? <a href="login.html" aria-label="Iniciar sesión en Psicólogo Virtual">Inicia sesión aquí</a></p>
-        </div>
-        <!-- Placeholder para Observable embed (futuro uso) -->
-        <div class="observable-embed-container">
-            <iframe class="observable-embed" src="https://observablehq.com/embed/@tu-usuario/registro-simulador?cells=usuariosTable" title="Simulador de Registro"></iframe>
         </div>
     </div>
 
@@ -513,7 +492,7 @@
                 const password = document.getElementById('password').value.trim();
                 const confirmPassword = document.getElementById('confirm_password').value.trim();
                 console.log(`Username: ${username}, Email: ${email}, Grade: ${grade || otherGrade}, Password: ${password}`);
-                alert('Registro simulado. Usa un notebook Observable para guardar datos.');
+                alert('Registro simulado. Crea un notebook Observable para guardar datos.');
                 // Aquí podrías redirigir a login.html o integrarlo con Observable
             });
         }

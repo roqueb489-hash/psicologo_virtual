@@ -221,15 +221,6 @@
             outline-offset: 2px;
         }
 
-        .observable-embed {
-            width: 100%;
-            height: 300px;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            margin: 1rem 0;
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
@@ -272,10 +263,6 @@
                 padding: 0.65rem 2.2rem 0.65rem 0.65rem;
                 font-size: 0.85rem;
             }
-
-            .observable-embed {
-                height: 250px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -306,10 +293,6 @@
             input[type="password"] {
                 padding: 0.5rem 2rem 0.5rem 0.5rem;
                 font-size: 0.8rem;
-            }
-
-            .observable-embed {
-                height: 200px;
             }
         }
 
@@ -348,10 +331,6 @@
         
         <div class="register-link">
             <p>¿No tienes cuenta? <a href="register.html" aria-label="Registrarse en Psicólogo Virtual">Regístrate</a></p>
-        </div>
-        <!-- Placeholder para Observable embed (futuro uso) -->
-        <div class="observable-embed-container">
-            <iframe class="observable-embed" src="https://observablehq.com/embed/@tu-usuario/login-simulador?cells=usuariosTable" title="Simulador de Inicio de Sesión"></iframe>
         </div>
     </div>
 
@@ -408,7 +387,7 @@
                 const email = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value.trim();
                 console.log(`Email: ${email}, Password: ${password}`);
-                alert('Inicio de sesión simulado. Usa un notebook Observable para validar usuarios.');
+                alert('Inicio de sesión simulado. Crea un notebook Observable para validar usuarios.');
                 // Aquí podrías redirigir a dashboard.html o integrarlo con Observable
             });
         }

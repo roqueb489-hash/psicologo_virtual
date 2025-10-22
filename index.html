@@ -39,7 +39,6 @@
             background: var(--gradient-body);
             color: var(--gray-800);
             line-height: 1.6;
-            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -627,8 +626,8 @@
     <!-- Navbar -->
     <nav class="navbar" role="navigation" aria-label="Navegación principal">
         <div class="nav-links">
-            <a href="login.php" class="nav-btn" aria-label="Iniciar sesión en Psicólogo Virtual"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Iniciar Sesión</a>
-            <a href="register.php" class="nav-btn" aria-label="Registrarse en Psicólogo Virtual"><i class="fas fa-user-plus" aria-hidden="true"></i> Registrarse</a>
+            <a href="login.html" class="nav-btn" aria-label="Iniciar sesión en Psicólogo Virtual"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Iniciar Sesión</a>
+            <a href="register.html" class="nav-btn" aria-label="Registrarse en Psicólogo Virtual"><i class="fas fa-user-plus" aria-hidden="true"></i> Registrarse</a>
         </div>
     </nav>
 
@@ -638,7 +637,7 @@
             <h1 id="hero-title">Psicólogo Virtual</h1>
             <p>Tu compañero de <strong>bienestar emocional</strong> impulsado por inteligencia artificial súper cool.</p>
             <div class="hero-buttons">
-                <a href="register.php" class="cta-primary" aria-label="Empieza gratis con Psicólogo Virtual"><i class="fas fa-rocket" aria-hidden="true"></i> ¡Empieza Gratis!</a>
+                <a href="register.html" class="cta-primary" aria-label="Empieza gratis con Psicólogo Virtual"><i class="fas fa-rocket" aria-hidden="true"></i> ¡Empieza Gratis!</a>
                 <a href="#cómo-funciona" class="cta-secondary" aria-label="Mira cómo funciona Psicólogo Virtual"><i class="fas fa-play" aria-hidden="true"></i> Mira Cómo Funciona</a>
             </div>
         </div>
@@ -686,88 +685,85 @@
             <div class="process-steps">
                 <div class="process-step" tabindex="0">
                     <div class="step-number">1</div>
-                    <i class="fas fa-comment-dots" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;" aria-hidden="true"></i>
                     <h3>Conversación Natural</h3>
                     <p>Habla con libertad, nuestra IA comprende emociones, contexto y matices.</p>
                 </div>
                 <div class="process-step" tabindex="0">
                     <div class="step-number">2</div>
-                    <i class="fas fa-brain" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;" aria-hidden="true"></i>
                     <h3>Análisis Emocional</h3>
                     <p>Evaluamos tu estado emocional en tiempo real con alertas inteligentes.</p>
                 </div>
                 <div class="process-step" tabindex="0">
                     <div class="step-number">3</div>
-                    <i class="fas fa-heartbeat" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;" aria-hidden="true"></i>
-                    <h3>Respuesta Personalizada</h3>
-                    <p>Recibe consejos empáticos adaptados a tus necesidades únicas.</p>
+                    <h3>Apoyo Personalizado</h3>
+                    <p>Recibe estrategias y ejercicios adaptados a tus necesidades únicas.</p>
                 </div>
             </div>
         </section>
 
         <!-- Stats Section -->
-        <section class="section stats animate-on-scroll" aria-labelledby="stats-title">
-            <h2 id="stats-title" class="visually-hidden">Estadísticas de Psicólogo Virtual</h2>
-            <div class="stat-item" tabindex="0">
-                <span class="stat-number">24/7</span>
-                <div class="stat-label">Disponibilidad</div>
+        <section class="section animate-on-scroll" aria-labelledby="stats-title">
+            <div class="section-title">
+                <h2 id="stats-title">Nuestro Impacto</h2>
+                <p>Resultados que hablan por sí mismos</p>
             </div>
-            <div class="stat-item" tabindex="0">
-                <span class="stat-number">+97%</span>
-                <div class="stat-label">Precisión Emocional</div>
-            </div>
-            <div class="stat-item" tabindex="0">
-                <span class="stat-number">100%</span>
-                <div class="stat-label">Confidencial</div>
-            </div>
-            <div class="stat-item" tabindex="0">
-                <span class="stat-number">0₿</span>
-                <div class="stat-label">Costo Inicial</div>
+            <div class="stats">
+                <div class="stat-item" tabindex="0">
+                    <span class="stat-number">10K+</span>
+                    <span class="stat-label">Usuarios Activos</span>
+                </div>
+                <div class="stat-item" tabindex="0">
+                    <span class="stat-number">1M+</span>
+                    <span class="stat-label">Conversaciones</span>
+                </div>
+                <div class="stat-item" tabindex="0">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">Satisfacción</span>
+                </div>
             </div>
         </section>
-    </div>
 
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3><i class="fas fa-brain" aria-hidden="true"></i> Psicólogo Virtual</h3>
-                <p>Tu compañero de bienestar emocional, siempre listo para ayudarte.</p>
+        <!-- Footer -->
+        <footer class="footer" aria-labelledby="footer-title">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 id="footer-title">Psicólogo Virtual</h3>
+                    <p>Tu compañero de bienestar emocional, siempre a tu lado.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <p><a href="login.html" aria-label="Iniciar sesión">Iniciar Sesión</a></p>
+                    <p><a href="register.html" aria-label="Registrarse">Registrarse</a></p>
+                    <p><a href="#cómo-funciona" aria-label="Cómo funciona">Cómo Funciona</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p><a href="mailto:support@psicologovirtual.com" aria-label="Enviar correo al soporte">support@psicologovirtual.com</a></p>
+                    <p><a href="https://x.com/psicologovirtual" target="_blank" aria-label="Visitar nuestro perfil en X">X: @PsicologoVirtual</a></p>
+                </div>
             </div>
-            <div class="footer-section">
-                <h3>Enlaces Rápidos</h3>
-                <p><a href="login.php" aria-label="Iniciar sesión">Iniciar Sesión</a></p>
-                <p><a href="register.php" aria-label="Registrarse">Registrarse</a></p>
-                <p><a href="#cómo-funciona" aria-label="Cómo funciona Psicólogo Virtual">Cómo Funciona</a></p>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Psicólogo Virtual. Todos los derechos reservados.</p>
             </div>
-            <div class="footer-section">
-                <h3>Soporte</h3>
-                <p><a href="mailto:support@psicologovirtual.com" aria-label="Correo de soporte">support@psicologovirtual.com</a></p>
-                <p><a href="privacy-policy.php" aria-label="Política de privacidad">Política de Privacidad</a></p>
-                <p><a href="terms-of-service.php" aria-label="Términos de servicio">Términos de Servicio</a></p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Psicólogo Virtual. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script>
         console.log('index.html loaded'); // Debug: Confirm page load
 
-        // Inicializar Supabase
+        // Initialize Supabase
         const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
         let supabase;
         try {
-            supabase = supabase.createClient(supabaseUrl, supabaseKey);
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             console.log('Supabase initialized successfully');
         } catch (err) {
             console.error('Failed to initialize Supabase:', err.message);
             console.log('Proceeding without Supabase session check');
         }
 
-        // Delay Supabase check to ensure rendering
+        // Check Supabase session
         window.addEventListener('load', () => {
             console.log('Window loaded, checking Supabase session');
             if (supabase) {
@@ -776,27 +772,21 @@
                         supabase.auth.getSession().then(({ data: { session } }) => {
                             console.log('Supabase session check completed');
                             if (session) {
-                                console.log('Active session found, preparing to redirect to dashboard.php');
-                                if (typeof localStorage !== 'undefined') {
-                                    localStorage.setItem('user_id', session.user.id);
-                                    localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
-                                    supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
-                                        if (!error && data) {
-                                            localStorage.setItem('grade', data.grade || 'No especificado');
-                                            console.log('User grade fetched, redirecting to dashboard.php');
-                                            window.location.href = 'dashboard.php';
-                                        } else {
-                                            console.error('Error fetching user grade:', error?.message);
-                                            console.log('Staying on index.html due to grade fetch error');
-                                        }
-                                    }).catch(err => {
-                                        console.error('Error querying usuarios table:', err.message);
-                                        console.log('Staying on index.html due to database query error');
-                                    });
-                                } else {
-                                    console.error('localStorage no está disponible.');
-                                    console.log('Staying on index.html due to localStorage unavailability');
-                                }
+                                console.log('Active session found, redirecting to dashboard.html');
+                                localStorage.setItem('user_id', session.user.id);
+                                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
+                                supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
+                                    if (!error && data) {
+                                        localStorage.setItem('grade', data.grade || 'No especificado');
+                                        window.location.href = 'dashboard.html';
+                                    } else {
+                                        console.error('Error fetching user grade:', error?.message);
+                                        console.log('Staying on index.html due to grade fetch error');
+                                    }
+                                }).catch(err => {
+                                    console.error('Error querying usuarios table:', err.message);
+                                    console.log('Staying on index.html due to database query error');
+                                });
                             } else {
                                 console.log('No active session, staying on index.html');
                             }
@@ -808,59 +798,24 @@
                         console.error('Unexpected error during session check:', err.message);
                         console.log('Staying on index.html due to unexpected error');
                     }
-                }, 1000); // Delay 1 second to ensure rendering
+                }, 1000); // Delay to ensure rendering
             } else {
                 console.log('Supabase not initialized, staying on index.html');
             }
-        });
 
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                console.log('Smooth scrolling to:', this.getAttribute('href'));
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Scroll animations with Intersection Observer
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        try {
+            // Intersection Observer for animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        console.log('Animating element:', entry.target.id || entry.target.className);
                         entry.target.classList.add('animated');
                         observer.unobserve(entry.target);
                     }
                 });
-            }, observerOptions);
+            }, { threshold: 0.2 });
 
-            document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                observer.observe(el);
+            document.querySelectorAll('.animate-on-scroll').forEach(element => {
+                observer.observe(element);
             });
-        } catch (err) {
-            console.error('Failed to initialize IntersectionObserver:', err.message);
-        }
-
-        // Navbar shadow on scroll
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.style.boxShadow = '0 6px 25px rgba(0, 0, 0, 0.2)';
-            } else {
-                navbar.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
-            }
         });
     </script>
 </body>

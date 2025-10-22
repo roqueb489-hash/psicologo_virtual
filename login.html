@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Iniciar Sesión en Psicólogo Virtual: Tu compañero de bienestar emocional.">
+    <meta name="keywords" content="psicólogo virtual, login, bienestar emocional, inteligencia artificial">
     <title>Iniciar Sesión - Psicólogo Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -31,11 +33,9 @@
         }
 
         html, body {
-            overflow-x: hidden;
-            width: 100%;
             min-height: 100vh;
             font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: url('https://images.unsplash.com/photo-1516321310764-8d8f6c0c77c0?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat scroll;
+            background: url('https://images.unsplash.com/photo-1516321310764-8d8f6c0c77c0?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
             color: var(--gray-800);
             line-height: 1.6;
             display: flex;
@@ -59,13 +59,12 @@
             backdrop-filter: blur(10px);
             max-width: 400px;
             width: 90%;
-            padding: 30px;
+            padding: 2rem;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             animation: fadeInUp 0.5s ease-in-out;
-            position: relative;
             text-align: center;
-            z-index: 1;
+            margin: 1rem;
         }
 
         @keyframes fadeInUp {
@@ -93,31 +92,35 @@
             background: var(--primary-dark);
         }
 
+        .back-button:focus {
+            outline: 3px solid var(--primary-dark);
+            outline-offset: 2px;
+        }
+
         .back-button i {
             font-size: 16px;
         }
 
         .logo {
-            margin-bottom: 20px;
-            margin-top: 15px;
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
         }
 
         .logo img {
             width: 100px;
             height: auto;
             filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
-            transition: none;
         }
 
         h2 {
             font-size: 1.8rem;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
             position: relative;
             text-align: left;
         }
@@ -125,8 +128,8 @@
         label {
             display: block;
             color: var(--gray-800);
-            font-size: 13px;
-            margin-bottom: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
             font-weight: 500;
             transition: color 0.3s ease;
         }
@@ -135,14 +138,13 @@
             color: var(--primary);
         }
 
-        input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px 40px 10px 12px;
+            padding: 0.75rem 2.5rem 0.75rem 0.75rem;
             border: 1px solid var(--gray-200);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 0.9rem;
             background: var(--gray-100);
             transition: border-color 0.3s, box-shadow 0.3s;
         }
@@ -156,11 +158,11 @@
 
         .form-group i {
             position: absolute;
-            top: 35px;
-            right: 12px;
+            top: 2.3rem;
+            right: 0.75rem;
             color: var(--gray-600);
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1rem;
             transition: color 0.3s ease;
         }
 
@@ -170,26 +172,49 @@
 
         button {
             width: 100%;
-            padding: 12px;
+            padding: 0.75rem;
             background: var(--gradient-primary);
             color: var(--white);
             border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: none;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        button:focus {
+            outline: 3px solid var(--primary-dark);
+            outline-offset: 2px;
         }
 
         .error {
             color: #dc2626;
-            font-size: 13px;
+            font-size: 0.85rem;
             background: #fee2e2;
-            padding: 8px;
+            padding: 0.5rem;
             border-radius: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
             animation: fadeInError 0.3s ease-in;
             display: none;
+            role: alert;
+        }
+
+        .success {
+            color: var(--success);
+            font-size: 0.85rem;
+            background: #dcfce7;
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            animation: fadeInError 0.3s ease-in;
+            display: none;
+            role: alert;
         }
 
         @keyframes fadeInError {
@@ -198,9 +223,8 @@
         }
 
         .register-link {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 13px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
             color: var(--gray-600);
         }
 
@@ -216,10 +240,16 @@
             text-decoration: underline;
         }
 
+        .register-link a:focus {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 1.5rem;
                 width: 95%;
+                margin: 0.5rem;
             }
 
             h2 {
@@ -227,8 +257,8 @@
             }
 
             button {
-                padding: 10px;
-                font-size: 13px;
+                padding: 0.65rem;
+                font-size: 0.85rem;
             }
 
             .logo img {
@@ -247,23 +277,22 @@
             }
 
             .form-group i {
-                top: 33px;
-                right: 10px;
-                font-size: 14px;
+                top: 2.1rem;
+                right: 0.65rem;
+                font-size: 0.9rem;
             }
 
-            input[type="text"],
             input[type="email"],
             input[type="password"] {
-                padding: 8px 35px 8px 10px;
-                font-size: 13px;
+                padding: 0.65rem 2.2rem 0.65rem 0.65rem;
+                font-size: 0.85rem;
             }
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 15px;
-                margin: 10px;
+                padding: 1rem;
+                margin: 0.5rem;
             }
 
             h2 {
@@ -271,8 +300,8 @@
             }
 
             button {
-                padding: 8px;
-                font-size: 12px;
+                padding: 0.5rem;
+                font-size: 0.8rem;
             }
 
             .logo img {
@@ -280,140 +309,213 @@
             }
 
             .form-group i {
-                top: 31px;
-                font-size: 13px;
+                top: 2rem;
+                font-size: 0.85rem;
             }
 
-            input[type="text"],
             input[type="email"],
             input[type="password"] {
-                padding: 7px 30px 7px 8px;
-                font-size: 12px;
+                padding: 0.5rem 2rem 0.5rem 0.5rem;
+                font-size: 0.8rem;
             }
         }
 
         @media (hover: none) {
-            .back-button, button, .register-link a, .logo img {
+            .back-button, button, .register-link a {
                 transform: none !important;
-                transition: none !important;
             }
         }
     </style>
 </head>
 <body>
-    <script>
-        // Inicializar Supabase
-        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co'; // Reemplaza con tu URL
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U'; // Reemplaza con tu anon key
-        const supabase = Supabase.createClient(supabaseUrl, supabaseKey);
-
-        // Verificar si el usuario está autenticado
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = 'dashboard.html';
-            }
-        });
-
-        // Manejo del formulario de login
-        const form = document.querySelector('#login-form');
-        const messageContainer = document.getElementById('message-container');
-        const errorDiv = document.createElement('p');
-        errorDiv.className = 'error';
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = form.querySelector('#email').value.trim();
-            const password = form.querySelector('#password').value.trim();
-            errorDiv.textContent = '';
-            errorDiv.style.display = 'none';
-            messageContainer.innerHTML = '';
-
-            // Validaciones
-            if (!email || !password) {
-                errorDiv.textContent = 'Por favor, completa todos los campos.';
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-
-            // Autenticación con Supabase
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
-
-            if (error) {
-                errorDiv.textContent = 'Error: ' + (error.message === 'Invalid login credentials' ? 'Correo o contraseña incorrectos.' : error.message);
-                errorDiv.style.display = 'block';
-                messageContainer.appendChild(errorDiv);
-                return;
-            }
-
-            // Guardar datos para compatibilidad
-            localStorage.setItem('user_id', data.user.id);
-            localStorage.setItem('username', data.user.user_metadata?.username || email);
-
-            // Cargar grade desde la tabla usuarios
-            const { data: userData, error: userError } = await supabase
-                .from('usuarios')
-                .select('grade')
-                .eq('id', data.user.id)
-                .single();
-
-            if (!userError && userData) {
-                localStorage.setItem('grade', userData.grade || 'No especificado');
-            }
-
-            window.location.href = 'dashboard.html';
-        });
-
-        // Alternar visibilidad de la contraseña
-        const togglePassword = document.querySelector('.toggle-password');
-        const passwordInput = document.querySelector('#password');
-
-        togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    </script>
-
     <div class="container">
-        <a href="index.html" class="back-button" title="Volver al inicio">
-            <i class="fas fa-arrow-left"></i>
+        <a href="index.html" class="back-button" title="Volver al inicio" aria-label="Volver a la página principal">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
         </a>
         <div class="logo">
-            <img src="inicio.png" alt="Psicólogo Virtual Logo">
+            <img src="https://via.placeholder.com/100x100?text=Psicólogo+Virtual" alt="Psicólogo Virtual Logo">
         </div>
         <h2>Iniciar Sesión</h2>
         
-        <div id="message-container"></div>
+        <div id="message-container" aria-live="polite"></div>
         
-        <form id="login-form">
+        <form id="login-form" aria-describedby="message-container">
             <div class="form-group">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required>
-                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required aria-label="Correo electrónico">
+                <i class="fas fa-envelope" aria-hidden="true"></i>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required>
-                <i class="fas fa-eye toggle-password"></i>
+                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required aria-label="Contraseña">
+                <i class="fas fa-eye toggle-password" aria-hidden="true"></i>
             </div>
-            <button type="submit">Iniciar Sesión</button>
+            <button type="submit" aria-label="Iniciar sesión en Psicólogo Virtual">Iniciar Sesión</button>
         </form>
         
         <div class="register-link">
-            <p>¡Crea una cuenta aquí si no tienes una! <a href="register.html">Regístrate</a></p>
+            <p>¿No tienes cuenta? <a href="register.html" aria-label="Registrarse en Psicólogo Virtual">Regístrate</a></p>
         </div>
     </div>
+
+    <script>
+        console.log('login.html loaded'); // Debug: Confirm page load
+
+        // Inicializar Supabase
+        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            console.log('Supabase initialized successfully');
+        } catch (err) {
+            console.error('Failed to initialize Supabase:', err.message);
+            console.log('Proceeding without Supabase session check');
+        }
+
+        window.addEventListener('load', () => {
+            console.log('Window loaded, checking Supabase session');
+            if (supabase) {
+                setTimeout(() => {
+                    try {
+                        supabase.auth.getSession().then(({ data: { session } }) => {
+                            console.log('Supabase session check completed');
+                            if (session) {
+                                console.log('Active session found, redirecting to dashboard.html');
+                                localStorage.setItem('user_id', session.user.id);
+                                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
+                                supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
+                                    if (!error && data) {
+                                        localStorage.setItem('grade', data.grade || 'No especificado');
+                                        window.location.href = 'dashboard.html';
+                                    } else {
+                                        console.error('Error fetching user grade:', error?.message);
+                                        console.log('Staying on login.html due to grade fetch error');
+                                    }
+                                }).catch(err => {
+                                    console.error('Error querying usuarios table:', err.message);
+                                    console.log('Staying on login.html due to database query error');
+                                });
+                            } else {
+                                console.log('No active session, staying on login.html');
+                            }
+                        }).catch(err => {
+                            console.error('Error checking session:', err.message);
+                            console.log('Staying on login.html due to session check error');
+                        });
+                    } catch (err) {
+                        console.error('Unexpected error during session check:', err.message);
+                        console.log('Staying on login.html due to unexpected error');
+                    }
+                }, 1000); // Delay to ensure rendering
+            } else {
+                console.log('Supabase not initialized, staying on login.html');
+            }
+
+            // Toggle password visibility
+            const togglePassword = document.querySelector('.toggle-password');
+            togglePassword.addEventListener('click', () => {
+                const passwordInput = document.getElementById('password');
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.classList.toggle('fa-eye');
+                togglePassword.classList.toggle('fa-eye-slash');
+                console.log('Toggled password visibility');
+            });
+
+            // Prevent unwanted zoom on mobile
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    document.body.style.overflow = 'hidden';
+                    console.log(`Input focused: ${input.id}`);
+                });
+                input.addEventListener('blur', () => {
+                    document.body.style.overflow = '';
+                    console.log(`Input blurred: ${input.id}`);
+                });
+            });
+
+            // Handle form submission
+            const form = document.getElementById('login-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('Login form submitted');
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const messageContainer = document.getElementById('message-container');
+
+                const errorDiv = document.createElement('p');
+                errorDiv.className = 'error';
+                const successDiv = document.createElement('p');
+                successDiv.className = 'success';
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+                messageContainer.innerHTML = '';
+
+                // Validations
+                if (!email || !password) {
+                    errorDiv.textContent = 'Por favor, completa todos los campos.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Missing fields');
+                    return;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Validation failed: Invalid email');
+                    return;
+                }
+
+                if (!supabase) {
+                    errorDiv.textContent = 'Error: No se pudo conectar con el servidor de autenticación.';
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.log('Supabase not initialized during form submission');
+                    return;
+                }
+
+                // Sign in with Supabase
+                try {
+                    console.log('Attempting Supabase sign-in');
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (error) throw error;
+
+                    localStorage.setItem('user_id', data.user.id);
+                    localStorage.setItem('username', data.user.user_metadata?.username || email);
+
+                    const { data: userData, error: dbError } = await supabase
+                        .from('usuarios')
+                        .select('grade')
+                        .eq('id', data.user.id)
+                        .single();
+
+                    if (dbError) throw dbError;
+
+                    localStorage.setItem('grade', userData?.grade || 'No especificado');
+
+                    successDiv.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
+                    successDiv.style.display = 'block';
+                    messageContainer.appendChild(successDiv);
+                    console.log('Login successful, redirecting to dashboard.html');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } catch (error) {
+                    errorDiv.textContent = 'Error al iniciar sesión: ' + error.message;
+                    errorDiv.style.display = 'block';
+                    messageContainer.appendChild(errorDiv);
+                    console.error('Login error:', error.message);
+                    setTimeout(() => errorDiv.style.display = 'none', 3000);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-

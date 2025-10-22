@@ -538,7 +538,7 @@
                     grade: grade !== 'Otro' ? grade : undefined,
                     otherGrade: grade === 'Otro' ? otherGrade : undefined
                 };
-                iframe.contentWindow.postMessage(data, 'https://observablehq.com'); // Ajusta el origen según tu configuración
+                iframe.contentWindow.postMessage(data, 'https://observablehq.com/d/5b80b9396965d7e9#usuariosTable'); // Ajusta el origen según tu configuración
 
                 // Mensaje de éxito
                 alert('Datos guardados en la BD de ObservableHQ');
@@ -548,3 +548,4 @@
     </script>
 </body>
 </html>
+

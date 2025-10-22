@@ -442,7 +442,7 @@
         </form>
 
         <div class="login-link">
-            <p>¿Ya tienes cuenta? <a href="login.php" aria-label="Iniciar sesión en Psicólogo Virtual">Inicia sesión aquí</a></p>
+            <p>¿Ya tienes cuenta? <a href="login.html" aria-label="Iniciar sesión en Psicólogo Virtual">Inicia sesión aquí</a></p>
         </div>
     </div>
 
@@ -454,7 +454,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
         let supabase;
         try {
-            supabase = supabase.createClient(supabaseUrl, supabaseKey);
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             console.log('Supabase initialized successfully');
         } catch (err) {
             console.error('Failed to initialize Supabase:', err.message);
@@ -469,22 +469,35 @@
                         supabase.auth.getSession().then(({ data: { session } }) => {
                             console.log('Supabase session check completed');
                             if (session) {
-                                console.log('Active session found, redirecting to dashboard.php');
-                                window.location.href = 'dashboard.php';
+                                console.log('Active session found, redirecting to dashboard.html');
+                                localStorage.setItem('user_id', session.user.id);
+                                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
+                                supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
+                                    if (!error && data) {
+                                        localStorage.setItem('grade', data.grade || 'No especificado');
+                                        window.location.href = 'dashboard.html';
+                                    } else {
+                                        console.error('Error fetching user grade:', error?.message);
+                                        console.log('Staying on register.html due to grade fetch error');
+                                    }
+                                }).catch(err => {
+                                    console.error('Error querying usuarios table:', err.message);
+                                    console.log('Staying on register.html due to database query error');
+                                });
                             } else {
                                 console.log('No active session, staying on register.html');
                             }
                         }).catch(err => {
                             console.error('Error checking session:', err.message);
-                            console.log('Proceeding without redirect');
+                            console.log('Staying on register.html due to session check error');
                         });
                     } catch (err) {
                         console.error('Unexpected error during session check:', err.message);
-                        console.log('Proceeding without redirect');
+                        console.log('Staying on register.html due to unexpected error');
                     }
                 }, 1000); // Delay to ensure rendering
             } else {
-                console.log('Supabase not initialized, skipping session check');
+                console.log('Supabase not initialized, staying on register.html');
             }
 
             // Alternar visibilidad de las contraseñas
@@ -648,9 +661,9 @@
                     successDiv.textContent = 'Registro exitoso. Redirigiendo al login...';
                     successDiv.style.display = 'block';
                     messageContainer.appendChild(successDiv);
-                    console.log('Registration successful, redirecting to login.php');
+                    console.log('Registration successful, redirecting to login.html');
                     setTimeout(() => {
-                        window.location.href = 'login.php';
+                        window.location.href = 'login.html';
                     }, 2000);
                 } catch (error) {
                     errorDiv.textContent = 'Error al registrarse: ' + error.message;

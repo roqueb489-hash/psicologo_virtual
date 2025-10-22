@@ -8,7 +8,6 @@
     <title>Registro - Psicólogo Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -118,33 +117,11 @@
             margin-bottom: 1rem;
         }
 
-        .error {
-            color: #dc2626;
+        .message {
+            color: var(--gray-600);
             font-size: 0.8rem;
-            background: #fee2e2;
-            padding: 0.5rem;
-            border-radius: 6px;
             margin-bottom: 1rem;
-            display: none;
-            animation: fadeInError 0.3s ease-in;
-            role: alert;
-        }
-
-        .success {
-            color: var(--success);
-            font-size: 0.8rem;
-            background: #dcfce7;
-            padding: 0.5rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            display: none;
-            animation: fadeInError 0.3s ease-in;
-            role: alert;
-        }
-
-        @keyframes fadeInError {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            animation: fadeInUp 0.3s ease-in;
         }
 
         .form-group {
@@ -263,6 +240,15 @@
             outline-offset: 2px;
         }
 
+        .observable-embed {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 1rem 0;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1.25rem;
@@ -333,9 +319,8 @@
                 font-size: 0.8rem;
             }
 
-            .error,
-            .success {
-                font-size: 0.75rem;
+            .observable-embed {
+                height: 250px;
             }
         }
 
@@ -368,14 +353,12 @@
                 padding: 0.5rem;
             }
 
-            .error,
-            .success {
-                font-size: 0.7rem;
-                padding: 0.4rem;
-            }
-
             .login-link {
                 font-size: 0.75rem;
+            }
+
+            .observable-embed {
+                height: 200px;
             }
         }
 
@@ -396,9 +379,9 @@
         </div>
         <h2>Crear Cuenta</h2>
 
-        <div id="message-container" aria-live="polite"></div>
+        <div class="message" id="current-date" aria-live="polite"></div>
 
-        <form id="register-form" aria-describedby="message-container">
+        <form id="register-form" aria-describedby="current-date">
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
                 <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required aria-label="Nombre de usuario">
@@ -443,236 +426,97 @@
         <div class="login-link">
             <p>¿Ya tienes cuenta? <a href="login.html" aria-label="Iniciar sesión en Psicólogo Virtual">Inicia sesión aquí</a></p>
         </div>
+        <!-- Placeholder para Observable embed (futuro uso) -->
+        <div class="observable-embed-container">
+            <iframe class="observable-embed" src="https://observablehq.com/embed/@tu-usuario/registro-simulador?cells=usuariosTable" title="Simulador de Registro"></iframe>
+        </div>
     </div>
 
     <script>
-        console.log('register.html loaded'); // Debug: Confirm page load
+        console.log('register.html loaded');
 
-        // Inicializar Supabase
-        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
-        let supabase;
-        try {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            console.log('Supabase initialized successfully');
-        } catch (err) {
-            console.error('Failed to initialize Supabase:', err.message);
-            console.log('Proceeding without Supabase session check');
+        // Mostrar fecha y hora actual
+        const currentDate = document.getElementById('current-date');
+        if (currentDate) {
+            const now = new Date();
+            currentDate.textContent = `Hoy es ${now.toLocaleString('es-PE', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            })}. Crea tu cuenta ahora.`;
         }
 
-        window.addEventListener('load', () => {
-            console.log('Window loaded, checking Supabase session');
-            if (supabase) {
-                setTimeout(() => {
-                    try {
-                        supabase.auth.getSession().then(({ data: { session } }) => {
-                            console.log('Supabase session check completed');
-                            if (session) {
-                                console.log('Active session found, redirecting to dashboard.html');
-                                localStorage.setItem('user_id', session.user.id);
-                                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
-                                supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
-                                    if (!error && data) {
-                                        localStorage.setItem('grade', data.grade || 'No especificado');
-                                        window.location.href = 'dashboard.html';
-                                    } else {
-                                        console.error('Error fetching user grade:', error?.message);
-                                        console.log('Staying on register.html due to grade fetch error');
-                                    }
-                                }).catch(err => {
-                                    console.error('Error querying usuarios table:', err.message);
-                                    console.log('Staying on register.html due to database query error');
-                                });
-                            } else {
-                                console.log('No active session, staying on register.html');
-                            }
-                        }).catch(err => {
-                            console.error('Error checking session:', err.message);
-                            console.log('Staying on register.html due to session check error');
-                        });
-                    } catch (err) {
-                        console.error('Unexpected error during session check:', err.message);
-                        console.log('Staying on register.html due to unexpected error');
-                    }
-                }, 1000); // Delay to ensure rendering
+        // Alternar visibilidad de las contraseñas
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+                console.log(`Toggled password visibility for ${targetId}`);
+            });
+        });
+
+        // Mostrar/ocultar campo de "Otro" grado
+        const gradeSelect = document.getElementById('grade');
+        const otherGradeGroup = document.getElementById('other_grade_group');
+        const otherGradeInput = document.getElementById('other_grade');
+
+        gradeSelect.addEventListener('change', function () {
+            if (this.value === 'Otro') {
+                otherGradeGroup.style.display = 'block';
+                otherGradeInput.setAttribute('required', 'required');
+                console.log('Showing other grade input');
             } else {
-                console.log('Supabase not initialized, staying on register.html');
-            }
-
-            // Alternar visibilidad de las contraseñas
-            const toggleButtons = document.querySelectorAll('.toggle-password');
-            toggleButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const targetId = this.getAttribute('data-target');
-                    const input = document.getElementById(targetId);
-                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                    input.setAttribute('type', type);
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
-                    console.log(`Toggled password visibility for ${targetId}`);
-                });
-            });
-
-            // Mostrar/ocultar campo de "Otro" grado
-            const gradeSelect = document.getElementById('grade');
-            const otherGradeGroup = document.getElementById('other_grade_group');
-            const otherGradeInput = document.getElementById('other_grade');
-
-            gradeSelect.addEventListener('change', function () {
-                if (this.value === 'Otro') {
-                    otherGradeGroup.style.display = 'block';
-                    otherGradeInput.setAttribute('required', 'required');
-                    console.log('Showing other grade input');
-                } else {
-                    otherGradeGroup.style.display = 'none';
-                    otherGradeInput.removeAttribute('required');
-                    otherGradeInput.value = '';
-                    console.log('Hiding other grade input');
-                }
-            });
-
-            // Inicializar visibilidad del campo "Otro"
-            if (gradeSelect.value !== 'Otro') {
                 otherGradeGroup.style.display = 'none';
+                otherGradeInput.removeAttribute('required');
+                otherGradeInput.value = '';
+                console.log('Hiding other grade input');
             }
+        });
 
-            // Prevenir zoom no deseado al enfocar inputs en móviles
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    document.body.style.overflow = 'hidden';
-                    console.log(`Input focused: ${input.id}`);
-                });
-                input.addEventListener('blur', () => {
-                    document.body.style.overflow = '';
-                    console.log(`Input blurred: ${input.id}`);
-                });
+        // Inicializar visibilidad del campo "Otro"
+        if (gradeSelect.value !== 'Otro') {
+            otherGradeGroup.style.display = 'none';
+        }
+
+        // Prevenir zoom no deseado al enfocar inputs en móviles
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                document.body.style.overflow = 'hidden';
+                console.log(`Input focused: ${input.id}`);
             });
+            input.addEventListener('blur', () => {
+                document.body.style.overflow = '';
+                console.log(`Input blurred: ${input.id}`);
+            });
+        });
 
-            // Manejo del formulario de registro
-            const form = document.getElementById('register-form');
-            form.addEventListener('submit', async (e) => {
+        // Simulación de envío de formulario (placeholder)
+        const form = document.getElementById('register-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                console.log('Form submitted');
+                console.log('Register form submitted (simulated)');
                 const username = document.getElementById('username').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const grade = gradeSelect.value;
                 const otherGrade = otherGradeInput.value.trim();
                 const password = document.getElementById('password').value.trim();
                 const confirmPassword = document.getElementById('confirm_password').value.trim();
-                const messageContainer = document.getElementById('message-container');
-
-                const errorDiv = document.createElement('p');
-                errorDiv.className = 'error';
-                const successDiv = document.createElement('p');
-                successDiv.className = 'success';
-                errorDiv.style.display = 'none';
-                successDiv.style.display = 'none';
-                messageContainer.innerHTML = '';
-
-                // Validaciones
-                if (!username || !email || !grade || !password || !confirmPassword) {
-                    errorDiv.textContent = 'Por favor, completa todos los campos.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Missing fields');
-                    return;
-                }
-                if (!/^[a-zA-Z0-9]{3,20}$/.test(username)) {
-                    errorDiv.textContent = 'El nombre de usuario debe tener entre 3 y 20 caracteres alfanuméricos.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Invalid username');
-                    return;
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Invalid email');
-                    return;
-                }
-                if (password.length < 8) {
-                    errorDiv.textContent = 'La contraseña debe tener al menos 8 caracteres.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Password too short');
-                    return;
-                }
-                if (password !== confirmPassword) {
-                    errorDiv.textContent = 'Las contraseñas no coinciden.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Passwords do not match');
-                    return;
-                }
-                if (grade === 'Otro' && !otherGrade) {
-                    errorDiv.textContent = "Por favor, especifica tu grado en el campo 'Otro'.";
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Missing other grade');
-                    return;
-                }
-
-                if (!supabase) {
-                    errorDiv.textContent = 'Error: No se pudo conectar con el servidor de autenticación.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Supabase not initialized during form submission');
-                    return;
-                }
-
-                // Registro en Supabase
-                console.log('Attempting Supabase signup');
-                try {
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: { username }
-                        }
-                    });
-
-                    if (error) throw error;
-
-                    const userId = data.user.id;
-                    const finalGrade = grade === 'Otro' ? otherGrade : grade;
-
-                    // Insertar datos en la tabla usuarios
-                    console.log('Inserting user data into usuarios table');
-                    const { error: dbError } = await supabase
-                        .from('usuarios')
-                        .insert({
-                            id: userId,
-                            email,
-                            username,
-                            grade: finalGrade
-                        });
-
-                    if (dbError) throw dbError;
-
-                    // Guardar en localStorage para compatibilidad
-                    localStorage.setItem('user_id', userId);
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('grade', finalGrade);
-
-                    // Mostrar mensaje de éxito
-                    successDiv.textContent = 'Registro exitoso. Redirigiendo al login...';
-                    successDiv.style.display = 'block';
-                    messageContainer.appendChild(successDiv);
-                    console.log('Registration successful, redirecting to login.html');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 2000);
-                } catch (error) {
-                    errorDiv.textContent = 'Error al registrarse: ' + error.message;
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.error('Registration error:', error.message);
-                    setTimeout(() => errorDiv.style.display = 'none', 3000);
-                }
+                console.log(`Username: ${username}, Email: ${email}, Grade: ${grade || otherGrade}, Password: ${password}`);
+                alert('Registro simulado. Usa un notebook Observable para guardar datos.');
+                // Aquí podrías redirigir a login.html o integrarlo con Observable
             });
-        });
+        }
     </script>
 </body>
 </html>

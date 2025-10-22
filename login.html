@@ -8,7 +8,6 @@
     <title>Iniciar Sesión - Psicólogo Virtual</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -192,33 +191,11 @@
             outline-offset: 2px;
         }
 
-        .error {
-            color: #dc2626;
+        .message {
+            color: var(--gray-600);
             font-size: 0.85rem;
-            background: #fee2e2;
-            padding: 0.5rem;
-            border-radius: 6px;
             margin-bottom: 1rem;
-            animation: fadeInError 0.3s ease-in;
-            display: none;
-            role: alert;
-        }
-
-        .success {
-            color: var(--success);
-            font-size: 0.85rem;
-            background: #dcfce7;
-            padding: 0.5rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            animation: fadeInError 0.3s ease-in;
-            display: none;
-            role: alert;
-        }
-
-        @keyframes fadeInError {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            animation: fadeInUp 0.3s ease-in;
         }
 
         .register-link {
@@ -242,6 +219,15 @@
         .register-link a:focus {
             outline: 3px solid var(--accent);
             outline-offset: 2px;
+        }
+
+        .observable-embed {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 1rem 0;
         }
 
         @media (max-width: 768px) {
@@ -286,6 +272,10 @@
                 padding: 0.65rem 2.2rem 0.65rem 0.65rem;
                 font-size: 0.85rem;
             }
+
+            .observable-embed {
+                height: 250px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -317,6 +307,10 @@
                 padding: 0.5rem 2rem 0.5rem 0.5rem;
                 font-size: 0.8rem;
             }
+
+            .observable-embed {
+                height: 200px;
+            }
         }
 
         @media (hover: none) {
@@ -336,9 +330,9 @@
         </div>
         <h2>Iniciar Sesión</h2>
         
-        <div id="message-container" aria-live="polite"></div>
+        <div class="message" id="current-date" aria-live="polite"></div>
         
-        <form id="login-form" aria-describedby="message-container">
+        <form id="login-form" aria-describedby="current-date">
             <div class="form-group">
                 <label for="email">Correo Electrónico</label>
                 <input type="email" id="email" name="email" placeholder="Ingresa tu correo" required aria-label="Correo electrónico">
@@ -355,64 +349,33 @@
         <div class="register-link">
             <p>¿No tienes cuenta? <a href="register.html" aria-label="Registrarse en Psicólogo Virtual">Regístrate</a></p>
         </div>
+        <!-- Placeholder para Observable embed (futuro uso) -->
+        <div class="observable-embed-container">
+            <iframe class="observable-embed" src="https://observablehq.com/embed/@tu-usuario/login-simulador?cells=usuariosTable" title="Simulador de Inicio de Sesión"></iframe>
+        </div>
     </div>
 
     <script>
-        console.log('login.html loaded'); // Debug: Confirm page load
+        console.log('login.html loaded');
 
-        // Inicializar Supabase
-        const supabaseUrl = 'https://ewoiwbqhxczychgknwnn.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3b2l3YnFoeGN6eWNoZ2tud25uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5NDIzMzgsImV4cCI6MjA3NjUxODMzOH0.zSK3RIliA17-R1t_lz23rVZ4pdhFxXB1W1Y-pYg1v5U';
-        let supabase;
-        try {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            console.log('Supabase initialized successfully');
-        } catch (err) {
-            console.error('Failed to initialize Supabase:', err.message);
-            console.log('Proceeding without Supabase session check');
+        // Mostrar fecha y hora actual
+        const currentDate = document.getElementById('current-date');
+        if (currentDate) {
+            const now = new Date();
+            currentDate.textContent = `Hoy es ${now.toLocaleString('es-PE', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+            })}. Inicia sesión para continuar.`;
         }
 
-        window.addEventListener('load', () => {
-            console.log('Window loaded, checking Supabase session');
-            if (supabase) {
-                setTimeout(() => {
-                    try {
-                        supabase.auth.getSession().then(({ data: { session } }) => {
-                            console.log('Supabase session check completed');
-                            if (session) {
-                                console.log('Active session found, redirecting to dashboard.html');
-                                localStorage.setItem('user_id', session.user.id);
-                                localStorage.setItem('username', session.user.user_metadata?.username || session.user.email);
-                                supabase.from('usuarios').select('grade').eq('id', session.user.id).single().then(({ data, error }) => {
-                                    if (!error && data) {
-                                        localStorage.setItem('grade', data.grade || 'No especificado');
-                                        window.location.href = 'dashboard.html';
-                                    } else {
-                                        console.error('Error fetching user grade:', error?.message);
-                                        console.log('Staying on login.html due to grade fetch error');
-                                    }
-                                }).catch(err => {
-                                    console.error('Error querying usuarios table:', err.message);
-                                    console.log('Staying on login.html due to database query error');
-                                });
-                            } else {
-                                console.log('No active session, staying on login.html');
-                            }
-                        }).catch(err => {
-                            console.error('Error checking session:', err.message);
-                            console.log('Staying on login.html due to session check error');
-                        });
-                    } catch (err) {
-                        console.error('Unexpected error during session check:', err.message);
-                        console.log('Staying on login.html due to unexpected error');
-                    }
-                }, 1000); // Delay to ensure rendering
-            } else {
-                console.log('Supabase not initialized, staying on login.html');
-            }
-
-            // Toggle password visibility
-            const togglePassword = document.querySelector('.toggle-password');
+        // Toggle password visibility
+        const togglePassword = document.querySelector('.toggle-password');
+        if (togglePassword) {
             togglePassword.addEventListener('click', () => {
                 const passwordInput = document.getElementById('password');
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -421,100 +384,34 @@
                 togglePassword.classList.toggle('fa-eye-slash');
                 console.log('Toggled password visibility');
             });
+        }
 
-            // Prevent unwanted zoom on mobile
-            const inputs = document.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    document.body.style.overflow = 'hidden';
-                    console.log(`Input focused: ${input.id}`);
-                });
-                input.addEventListener('blur', () => {
-                    document.body.style.overflow = '';
-                    console.log(`Input blurred: ${input.id}`);
-                });
+        // Prevent unwanted zoom on mobile
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                document.body.style.overflow = 'hidden';
+                console.log(`Input focused: ${input.id}`);
             });
-
-            // Handle form submission
-            const form = document.getElementById('login-form');
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                console.log('Login form submitted');
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value.trim();
-                const messageContainer = document.getElementById('message-container');
-
-                const errorDiv = document.createElement('p');
-                errorDiv.className = 'error';
-                const successDiv = document.createElement('p');
-                successDiv.className = 'success';
-                errorDiv.style.display = 'none';
-                successDiv.style.display = 'none';
-                messageContainer.innerHTML = '';
-
-                // Validations
-                if (!email || !password) {
-                    errorDiv.textContent = 'Por favor, completa todos los campos.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Missing fields');
-                    return;
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    errorDiv.textContent = 'Por favor, ingresa un correo electrónico válido.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Validation failed: Invalid email');
-                    return;
-                }
-
-                if (!supabase) {
-                    errorDiv.textContent = 'Error: No se pudo conectar con el servidor de autenticación.';
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.log('Supabase not initialized during form submission');
-                    return;
-                }
-
-                // Sign in with Supabase
-                try {
-                    console.log('Attempting Supabase sign-in');
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
-                    });
-
-                    if (error) throw error;
-
-                    localStorage.setItem('user_id', data.user.id);
-                    localStorage.setItem('username', data.user.user_metadata?.username || email);
-
-                    const { data: userData, error: dbError } = await supabase
-                        .from('usuarios')
-                        .select('grade')
-                        .eq('id', data.user.id)
-                        .single();
-
-                    if (dbError) throw dbError;
-
-                    localStorage.setItem('grade', userData?.grade || 'No especificado');
-
-                    successDiv.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
-                    successDiv.style.display = 'block';
-                    messageContainer.appendChild(successDiv);
-                    console.log('Login successful, redirecting to dashboard.html');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 2000);
-                } catch (error) {
-                    errorDiv.textContent = 'Error al iniciar sesión: ' + error.message;
-                    errorDiv.style.display = 'block';
-                    messageContainer.appendChild(errorDiv);
-                    console.error('Login error:', error.message);
-                    setTimeout(() => errorDiv.style.display = 'none', 3000);
-                }
+            input.addEventListener('blur', () => {
+                document.body.style.overflow = '';
+                console.log(`Input blurred: ${input.id}`);
             });
         });
+
+        // Simulación de envío de formulario (placeholder)
+        const form = document.getElementById('login-form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('Login form submitted (simulated)');
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+                console.log(`Email: ${email}, Password: ${password}`);
+                alert('Inicio de sesión simulado. Usa un notebook Observable para validar usuarios.');
+                // Aquí podrías redirigir a dashboard.html o integrarlo con Observable
+            });
+        }
     </script>
 </body>
 </html>

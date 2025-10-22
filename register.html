@@ -240,6 +240,15 @@
             outline-offset: 2px;
         }
 
+        .observable-embed {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            margin: 1rem 0;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1.25rem;
@@ -309,6 +318,10 @@
             .login-link {
                 font-size: 0.8rem;
             }
+
+            .observable-embed {
+                height: 250px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -342,6 +355,10 @@
 
             .login-link {
                 font-size: 0.75rem;
+            }
+
+            .observable-embed {
+                height: 200px;
             }
         }
 
@@ -408,6 +425,11 @@
 
         <div class="login-link">
             <p>¿Ya tienes cuenta? <a href="login.html" aria-label="Iniciar sesión en Psicólogo Virtual">Inicia sesión aquí</a></p>
+        </div>
+
+        <!-- Incrustar el notebook de ObservableHQ -->
+        <div class="observable-embed-container">
+            <iframe class="observable-embed" src="https://observablehq.com/embed/@tu-usuario/registro-bd-psicologo?cells=usuariosTable" title="Base de Datos de Registro"></iframe>
         </div>
     </div>
 
@@ -479,21 +501,48 @@
             });
         });
 
-        // Simulación de envío de formulario (placeholder)
+        // Enviar datos al notebook de ObservableHQ
         const form = document.getElementById('register-form');
-        if (form) {
+        const iframe = document.querySelector('.observable-embed');
+        if (form && iframe) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                console.log('Register form submitted (simulated)');
+                console.log('Register form submitted');
+
                 const username = document.getElementById('username').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const grade = gradeSelect.value;
                 const otherGrade = otherGradeInput.value.trim();
                 const password = document.getElementById('password').value.trim();
                 const confirmPassword = document.getElementById('confirm_password').value.trim();
-                console.log(`Username: ${username}, Email: ${email}, Grade: ${grade || otherGrade}, Password: ${password}`);
-                alert('Registro simulado. Crea un notebook Observable para guardar datos.');
-                // Aquí podrías redirigir a login.html o integrarlo con Observable
+
+                // Validaciones básicas
+                if (!username || !email || !grade || !password || !confirmPassword) {
+                    alert('Por favor, completa todos los campos.');
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    alert('Las contraseñas no coinciden.');
+                    return;
+                }
+                if (grade === 'Otro' && !otherGrade) {
+                    alert('Por favor, especifica tu grado en el campo "Otro".');
+                    return;
+                }
+
+                // Enviar datos al iframe (notebook)
+                const data = {
+                    type: "register",
+                    username: username,
+                    email: email,
+                    grade: grade !== 'Otro' ? grade : undefined,
+                    otherGrade: grade === 'Otro' ? otherGrade : undefined
+                };
+                iframe.contentWindow.postMessage(data, 'https://observablehq.com'); // Ajusta el origen según tu configuración
+
+                // Mensaje de éxito
+                alert('Datos guardados en la BD de ObservableHQ');
+                form.reset(); // Limpiar el formulario
             });
         }
     </script>
